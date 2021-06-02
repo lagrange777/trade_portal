@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_pymongo import PyMongo
 from yandex_checkout import Configuration
 
 app = Flask(__name__)
@@ -9,3 +10,4 @@ Configuration.secret_key = 'live_yGwjsz7e4-gurjx0sbduIHZjy0OsJyjKeW6HRJTh5Cc'
 app.config[
     "MONGO_URI"] = "mongodb://vrtimmrtl:Asdqwerty123@3err0.ru:27017/globaltrade_app?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false"
 manager = LoginManager(app)
+mongo = PyMongo(app)

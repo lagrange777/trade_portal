@@ -1,11 +1,10 @@
-from flask import Blueprint
-from main import mongo
-from models.seller import Seller, SellerDBHelper
-from bson import ObjectId
 from flask import request, Blueprint
+
+from app_config import mongo
+from models.seller import SellerDBHelper
 from utils.response_helper import create_resp
 
-sellers_routes = Blueprint('sellers_routes', __name__, url_prefix='/api/bars/')
+sellers_routes = Blueprint('sellers_routes', __name__, url_prefix='/api/sellers/')
 db = SellerDBHelper(mongo)
 
 
@@ -22,7 +21,6 @@ def add_seller():
         result = 'such seller already exists'
 
     return create_resp(msg_id, result)
-
 
 # @sellers_routes.route('get_all_sellers', methods=['POST'])
 # def get_all_sellers():

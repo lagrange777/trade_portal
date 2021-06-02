@@ -2,7 +2,7 @@ from flask_pymongo import PyMongo
 from bson import ObjectId
 import werkzeug.security
 
-from constants import SellerDBKeys
+from models.constants import SellerDBKeys
 
 dbk = SellerDBKeys()
 wz = werkzeug.security
@@ -66,7 +66,7 @@ class SellerDBHelper:
                     dbk.full_name: new_seller.full_name,
                     dbk.short_name: new_seller.short_name,
                     dbk.email: new_seller.email,
-                    dbk.password_hash: new_seller.password_hash,
+                    dbk.password_hash: wz.generate_password_hash(new_seller.password_hash),
                     dbk.discount: new_seller.discount,
                     dbk.delay: new_seller.delay,
                     dbk.manager: new_seller.manager,

@@ -1,8 +1,5 @@
-from app_config import app, manager
-from flask_pymongo import PyMongo
-from routes.api.sellers_routes import sellers_routes
-
-mongo = PyMongo(app)
+from app_config import app
+from routes.api.sellers import sellers_routes
 
 
 @app.route('/api-map')
