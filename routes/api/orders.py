@@ -11,4 +11,5 @@ dbk = SellerDBKeys()
 
 
 @orders_routes.route('create_orders', methods=['POST'])
-def create_orders():
+def create_order():
+    _json = request.json

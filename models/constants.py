@@ -22,3 +22,12 @@ class OrderDBKeys:
         self.item_name = 'ITEM_NAME'
         self.qty = 'QTY'
         self.sellers = 'SELLERS'
+        self.date = 'DATE'
+        self.status = 'STATUS'
+        self.items = 'ITEMS'
+
+
+class OrderStatus:
+    def __init__(self):
+        self.CLOSED = 0
+        self.ACTIVE = 1
