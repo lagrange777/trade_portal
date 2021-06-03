@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ФудТорг</title>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="template language" name="keywords">
+    <meta content="Tamerlan Soziev" name="author">
+    <meta content="Admin dashboard html template" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="favicon.png" rel="shortcut icon">
+    <link href="apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet" type="text/css">
+    <link href="static/bower_components/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link href="static/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="static/bower_components/dropzone/dist/dropzone.css" rel="stylesheet">
+    <link href="static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="static/bower_components/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
+    <link href="static/bower_components/perfect-scrollbar/css/perfect-scrollbar.min.css" rel="stylesheet">
+    <link href="static/bower_components/slick-carousel/slick/slick.css" rel="stylesheet">
+    <link href="static/css/main.css?version=4.4.0" rel="stylesheet">
+</head>
+<body class="menu-position-side menu-side-left full-screen with-content-panel">
+<div class="all-wrapper with-side-panel solid-bg-all">
+    <div class="layout-w">
+        <!--------------------
+        START - Mobile Menu
+        -------------------->
+        <div class="menu-mobile menu-activated-on-click color-scheme-dark">
+            <div class="mm-logo-buttons-w"><img src="" width="100" height="30" alt=""/>
+                <div class="mm-buttons">
+                    <div class="content-panel-open">
+                        <div class="os-icon os-icon-grid-circles"></div>
+                    </div>
+                    <div class="mobile-menu-trigger">
+                        <div class="os-icon os-icon-hamburger-menu-1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-and-user">
+                <div class="logged-user-w">
+                    <div class="avatar-w">
+                        <img alt="" src="static/img/avatar1.jpg">
+                    </div>
+                    <div class="logged-user-info-w">
+                        <div class="logged-user-name">
+                            ФудТорг
+                        </div>
+                        <div class="logged-user-role">
+                            Администратор
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-menu-magic">
+                    <h4>&nbsp;</h4>
+                </div>
+            </div>
+        </div>
+        {% include 'addtemp/side_menu.html' %}
+        <div class="content-w">
+            <div class="top-bar color-scheme-transparent"></div>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="index.html">Все поставщики</a>
+                </li>
+            </ul>
+            <div class="content-panel-toggler">
+                <i class="os-icon os-icon-grid-squares-22"></i><span>Справочник</span>
+            </div>
+            <div class="content-i">
+                <div class="content-box">
+                    <table class="table table-lightborder" width="100%">
+                        <thead>
+                        <tr>
+                            <th class="text-left">DBID</th>
+                            <th class="text-left">Наименование поставщика</th>
+                            <th class="text-left">Срок жизни прайса</th>
+                            <th class="text-left">1C ID</th>
+                            <th class="text-left">Действие</th>
+                            <th class="text-left">Действие</th>
+                        </tr>
+                        </thead>
+                        <tbody class="msg-table">
+                        {% for i in range(0, all_sellers_list|length) %}
+                            <tr>
+                                <td class="text-left">
+                                    <input id="id_{{ i }}"
+                                           class="form-control"
+                                           required="required"
+                                           type="text"
+                                           value="{{ all_sellers_list[i]._id }}"
+                                           readonly>
+                                </td>
+                                <td class="text-left">
+                                    <input id="seller_name_{{ i }}"
+                                           class="form-control"
+                                           required="required"
+                                           type="text"
+                                           value="{{ all_sellers_list[i].seller_name }}"
+                                           readonly>
+                                </td>
+                                <td class="text-left">
+                                    <input id="seller_life_time_val_{{ i }}"
+                                           class="form-control"
+                                           required="required"
+                                           type="text"
+                                           value="{{ all_sellers_list[i].life_time_val }}">
+                                </td>
+                                <td class="text-left">
+                                    <input id="seller_1c_id_{{ i }}"
+                                           class="form-control"
+                                           required="required"
+                                           type="text"
+                                           value="{{ all_sellers_list[i].seller_1c_id }}">
+                                </td>
+                                <td class="text-left">
+                                    <a class="btn text-white btn-primary" id="delete_seller_{{ i }}">Удалить</a>
+                                    <a class="btn text-white btn-danger"
+                                       id="confirm_delete_seller_{{ i }}">Подтвердить</a>
+                                    <a class="btn text-white btn-primary"
+                                       id="cancel_delete_seller_{{ i }}">Отменить</a>
+                                </td>
+                                <td class="text-left">
+                                    <a class="btn text-white btn-primary" id="change_seller_{{ i }}">Изменить</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="display-type"></div>
+</div>
+<script src="static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="static/bower_components/popper.js/dist/umd/popper.min.js"></script>
+<script src="static/bower_components/moment/moment.js"></script>
+<script src="static/bower_components/chart.js/dist/Chart.min.js"></script>
+<script src="static/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script src="static/bower_components/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
+<script src="static/bower_components/ckeditor/ckeditor.js"></script>
+<script src="static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
+<script src="static/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="static/bower_components/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
+<script src="static/bower_components/dropzone/dist/dropzone.js"></script>
+<script src="static/bower_components/editable-table/mindmup-editabletable.js"></script>
+<script src="static/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="static/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<script src="static/bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="static/bower_components/tether/dist/js/tether.min.js"></script>
+<script src="static/bower_components/slick-carousel/slick/slick.min.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/util.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/alert.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/button.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/carousel.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/collapse.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/dropdown.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/modal.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/tab.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/tooltip.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/popover.js"></script>
+<script src="static/js/demo_customizer.js?version=4.4.0"></script>
+<script src="static/js/main.js?version=4.4.0"></script>
+<script src="static/bower_components/bootstrap/js/dist/popover.js"></script>
+<script src="static/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        {% for i in range(0, all_sellers_list|length) %}
+
+            $('#confirm_delete_seller_{{ i }}').hide();
+            $('#cancel_delete_seller_{{ i }}').hide();
+
+            $('#delete_seller_{{ i }}').click(function () {
+                $('#confirm_delete_seller_{{ i }}').show();
+                $('#cancel_delete_seller_{{ i }}').show();
+                $('#delete_seller_{{ i }}').hide();
+            });
+
+            $('#cancel_delete_seller_{{ i }}').click(function () {
+                $('#confirm_delete_seller_{{ i }}').hide();
+                $('#cancel_delete_seller_{{ i }}').hide();
+                $('#delete_seller_{{ i }}').show();
+            });
+
+            $('#confirm_delete_seller_{{ i }}').click(function () {
+                $('#confirm_delete_seller_{{ i }}')
+                    .removeClass('btn-danger')
+                    .addClass('btn-grey')
+                    .addClass('disabled')
+                    .html('Удалено');
+                $('#cancel_delete_seller_{{ i }}').hide();
+
+                let seller_id = $('#id_{{ i }}').val();
+                $.ajax({
+                    url: "/api/remove_seller",
+                    data: JSON.stringify({
+                        seller_id: seller_id
+                    }),
+                    contentType: 'application/json;charset=UTF-8',
+                    method: 'POST',
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function (error) {
+                    }
+                });
+            });
+
+            $('#change_seller_{{ i }}').click(function () {
+                let seller_id = $('#id_{{ i }}').val();
+                let new_life_time_val = $('#seller_life_time_val_{{ i }}').val();
+                let new_1c_id = $('#seller_1c_id_{{ i }}').val();
+                $.ajax({
+                    url: "/api/change_seller",
+                    data: JSON.stringify({
+                        seller_id: seller_id,
+                        new_life_time_val: new_life_time_val,
+                        new_1c_id: new_1c_id
+                    }),
+                    contentType: 'application/json;charset=UTF-8',
+                    method: 'POST',
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function (error) {
+                    }
+                });
+            });
+
+        {% endfor %}
+    });
+</script>
+</body>
+</html>

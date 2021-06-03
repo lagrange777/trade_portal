@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ФудТорг</title>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="template language" name="keywords">
+    <meta content="Tamerlan Soziev" name="author">
+    <meta content="Admin dashboard html template" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="favicon.png" rel="shortcut icon">
+    <link href="apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet" type="text/css">
+    <link href="static/bower_components/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link href="static/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="static/bower_components/dropzone/dist/dropzone.css" rel="stylesheet">
+    <link href="static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="static/bower_components/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
+    <link href="static/bower_components/perfect-scrollbar/css/perfect-scrollbar.min.css" rel="stylesheet">
+    <link href="static/bower_components/slick-carousel/slick/slick.css" rel="stylesheet">
+    <link href="static/css/main.css?version=4.4.0" rel="stylesheet">
+</head>
+<body class="menu-position-side menu-side-left full-screen with-content-panel">
+<div class="all-wrapper with-side-panel solid-bg-all">
+    <div class="layout-w">
+        <!--------------------
+        START - Mobile Menu
+        -------------------->
+        <div class="menu-mobile menu-activated-on-click color-scheme-dark">
+            <div class="mm-logo-buttons-w"><img src="" width="100" height="30" alt=""/>
+                <div class="mm-buttons">
+                    <div class="content-panel-open">
+                        <div class="os-icon os-icon-grid-circles"></div>
+                    </div>
+                    <div class="mobile-menu-trigger">
+                        <div class="os-icon os-icon-hamburger-menu-1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-and-user">
+                <div class="logged-user-w">
+                    <div class="avatar-w">
+                        <img alt="" src="static/img/avatar1.jpg">
+                    </div>
+                    <div class="logged-user-info-w">
+                        <div class="logged-user-name">
+                            ФудТорг
+                        </div>
+                        <div class="logged-user-role">
+                            Администратор
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-menu-magic"></div>
+            </div>
+        </div>
+        {% include 'addtemp/side_menu.html' %}
+        <!--------------------
+        END - Main Menu
+        -------------------->
+        <div class="content-w">
+            <!--------------------
+            START - Top Bar
+            -------------------->
+            <div class="top-bar color-scheme-transparent">
+                <!--------------------
+                START - Top Menu Controls
+                -------------------->
+
+
+            </div>
+            <!--------------------
+            END - Top Bar
+            --------------------><!--------------------
+          START - Breadcrumbs
+          -------------------->
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="index.html">Создать заявку</a>
+                </li>
+
+            </ul>
+            <!--------------------
+            END - Breadcrumbs
+            -------------------->
+            <div class="content-panel-toggler">
+                <i class="os-icon os-icon-grid-squares-22"></i><span>Sidebar</span>
+            </div>
+            <div class="content-i">
+                <div class="content-box">
+                    <div class="row col-sm-12">
+                        <a class="btn btn-primary text-white mr-5" id="use_form_btn">Использовать форму</a>
+{#                        <a class="btn btn-primary text-white" id="use_csv_btn">Загрузить CSV</a>#}
+                        <div class="table-responsive mt-5">
+                            <!--------------------
+                            START - Basic Table
+                            -------------------->
+                            <table class="table table-striped table-bordered" id="order_table">
+                                <thead>
+                                <tr>
+                                    <th width="60%">Наименование (ФТ)</th>
+                                    <th width="40%"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for index in range(1, all_items|length - 1 ) %}
+                                    <tr>
+                                        <th width="60%">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   readonly
+                                                   value="{{ all_items[index].itemName }}">
+                                        </th>
+                                        <th width="40%">
+                                            <a class="btn btn-primary text-white"
+                                               id="add_to_order_{{ index }}">Добавить</a>
+                                            <a class="btn btn-danger text-white" id="remove_from_order_{{ index }}">Удалить</a>
+                                        </th>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-12 mt-5">
+                            <div class="form-row">
+                                <div class="form-group col-4">
+                                    <label for="item_qty">Дата актуальности прайсов</label>
+                                    <input type="text" class="form-control" id="price_date" placeholder="гггг-мм-дд">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="item_qty">Email для получения прайсов</label>
+                                    <input type="text" class="form-control" id="email" placeholder="mail@domen.com">
+                                </div>
+                                <div class="row w-100"></div>
+                                <div class="form-group col-6">
+                                    <label for="get_price"></label>
+                                    <a class="btn btn-primary text-white" id="create_order">Собрать заказ</a>
+                                </div>
+                                <div class="col-sm-12" id="compared_price"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="display-type"></div>
+    </div>
+    <script src="static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="static/bower_components/popper.js/dist/umd/popper.min.js"></script>
+    <script src="static/bower_components/moment/moment.js"></script>
+    <script src="static/bower_components/chart.js/dist/Chart.min.js"></script>
+    <script src="static/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <script src="static/bower_components/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
+    <script src="static/bower_components/ckeditor/ckeditor.js"></script>
+    <script src="static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
+    <script src="static/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="static/bower_components/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
+    <script src="static/bower_components/dropzone/dist/dropzone.js"></script>
+    <script src="static/bower_components/editable-table/mindmup-editabletable.js"></script>
+    <script src="static/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="static/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="static/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+    <script src="static/bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="static/bower_components/tether/dist/js/tether.min.js"></script>
+    <script src="static/bower_components/slick-carousel/slick/slick.min.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/util.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/alert.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/button.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/carousel.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/collapse.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/dropdown.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/modal.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/tab.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/tooltip.js"></script>
+    <script src="static/bower_components/bootstrap/js/dist/popover.js"></script>
+    <script src="static/js/demo_customizer.js?version=4.4.0"></script>
+    <script src="static/js/main.js?version=4.4.0"></script>
+    <script>
+        $(document).ready(function () {
+            let table_state = false;
+
+            $('#order_table').hide()
+
+            $('#use_form_btn').click(function () {
+                if (!table_state)
+                    $('#order_table').show()
+                else
+                    $('#order_table').hide()
+                table_state = !table_state
+            });
+
+            let order_items = [];
+
+            {% for index in range(0, (all_items|length) - 1) %}
+
+                let item_{{ index }} = false
+                $('#remove_from_order_{{ index }}').hide();
+
+                $('#add_to_order_{{ index }}').click(function () {
+                    let item_id = {{ all_items[index]._id }};
+                    item_{{ index }} = true;
+                    $('#remove_from_order_{{ index }}').show();
+                    $(this).hide();
+                });
+
+                $('#remove_from_order_{{ index }}').click(function () {
+                    item_{{ index }} = false;
+                    $('#add_to_order_{{ index }}').show();
+                    $(this).hide();
+                });
+            {% endfor %}
+
+            $('#create_order').click(function () {
+                {% for index in range(0, all_items|length - 1) %}
+                    if (item_{{ index }})
+                        order_items.push({{ all_items[index]._id }})
+                {% endfor %}
+                let price_date = $('#price_date').val();
+                if (price_date == '')
+                    price_date = 'all'
+                let email = $('#email').val();
+                if (email == '')
+                    email = 'mathispower@yandex.ru'
+                $.ajax({
+                    url: "/api/compare_price_and_prepare_order",
+                    data: JSON.stringify({
+                        order_items: order_items,
+                        price_date: price_date,
+                        email_for_orders: email
+                    }),
+                    contentType: 'application/json;charset=UTF-8',
+                    method: 'POST',
+                    success: function (response) {
+                        order_items = [];
+
+                        alert(response)
+                    },
+                    error: function (error) {
+                    }
+                });
+            });
+        })
+    </script>
+
+</body>
+</html>

@@ -1,3 +1,5 @@
+import json
+
 from flask_pymongo import PyMongo
 from bson import ObjectId
 import werkzeug.security
@@ -37,9 +39,36 @@ class Seller:
         self.add_info = add_info
 
 
+class SellerEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Seller):
+            return obj.__dict__
+        return json.JSONEncoder.default(self, obj)
+
+
 class SellerDBHelper:
     def __init__(self, mongo: PyMongo):
         self.mongo = mongo
+
+    def get_all_sellers(self):
+        sellers = self.mongo.db[dbk.db_name].find()
+        parsed_sellers = []
+        for seller in sellers:
+            s = self.parse_seller(seller)
+            seller_as_dict = {
+                dbk.id_db: str(s.id_db),
+                dbk.id_1c: s.id_1c,
+                dbk.full_name: s.full_name,
+                dbk.short_name: s.short_name,
+                dbk.email: s.email,
+                dbk.discount: s.discount,
+                dbk.delay: s.delay,
+                dbk.manager: s.manager,
+                dbk.inn: s.inn,
+                dbk.add_info: s.add_info
+            }
+            parsed_sellers.append(seller_as_dict)
+        return parsed_sellers
 
     def find_by_1c_id(self, id_1c):  # return Seller
         db_seller = self.mongo.db[dbk.db_name].find_one(
@@ -150,3 +179,19 @@ class SellerDBHelper:
             return seller
         else:
             return None
+
+    @staticmethod
+    def seller_to_dict(seller: Seller):
+        seller_as_dict = {
+            dbk.id_db: str(seller.id_db),
+            dbk.id_1c: seller.id_1c,
+            dbk.full_name: seller.full_name,
+            dbk.short_name: seller.short_name,
+            dbk.email: seller.email,
+            dbk.discount: seller.discount,
+            dbk.delay: seller.delay,
+            dbk.manager: seller.manager,
+            dbk.inn: seller.inn,
+            dbk.add_info: seller.add_info
+        }
+        return seller_as_dict

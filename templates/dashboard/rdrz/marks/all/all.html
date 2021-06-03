@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ProControl</title>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="template language" name="keywords">
+    <meta content="ProControl admin dashboard" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="favicon.png" rel="shortcut icon">
+    <link href="apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet" type="text/css">
+    <link href="../../../../static/bower_components/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/dropzone/dist/dropzone.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css"
+          rel="stylesheet">
+    <link href="../../../../static/bower_components/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/perfect-scrollbar/css/perfect-scrollbar.min.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/slick-carousel/slick/slick.css" rel="stylesheet">
+    <link href="../../../../static/css/main.css?version=4.4.0" rel="stylesheet">
+</head>
+<body class="menu-position-side menu-side-left full-screen with-content-panel">
+<div class="all-wrapper with-side-panel solid-bg-all">
+    <div class="layout-w">
+        <!--------------------
+        START - Mobile Menu
+        -------------------->
+        <div class="menu-mobile menu-activated-on-click color-scheme-dark">
+            <div class="mm-logo-buttons-w"><img src="" width="100" height="30" alt=""/>
+                <div class="mm-buttons">
+                    <div class="content-panel-open">
+                        <div class="os-icon os-icon-grid-circles"></div>
+                    </div>
+                    <div class="mobile-menu-trigger">
+                        <div class="os-icon os-icon-hamburger-menu-1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-and-user">
+                <div class="logged-user-w">
+                    <div class="avatar-w">
+                        <img alt="" src="../../../../static/img/avatar1.jpg">
+                    </div>
+                    <div class="logged-user-info-w">
+                        <div class="logged-user-name">
+                            RDRZ ProControl
+                        </div>
+                        <div class="logged-user-role">
+                            Администратор
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-menu-magic">
+                    <h4>&nbsp;</h4>
+                </div>
+            </div>
+        </div>
+        {% include side_menu %}
+        <div class="content-w">
+            <div class="top-bar color-scheme-transparent"></div>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/dashboard/rdrz/main">Все метки</a>
+                </li>
+            </ul>
+            <div class="content-panel-toggler">
+                <i class="os-icon os-icon-grid-squares-22"></i><span></span>
+            </div>
+            <div class="content-i">
+                <div class="content-box">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="element-wrapper">
+                                {#                                <div class="element-actions">#}
+                                {#                                    <form class="form-inline justify-content-sm-end">#}
+                                {#                                        <select class="form-control form-control-sm rounded">#}
+                                {#                                            <option value="Pending">#}
+                                {#                                                Сегодня#}
+                                {#                                            </option>#}
+                                {#                                            <option value="Active">#}
+                                {#                                                Неделя#}
+                                {#                                            </option>#}
+                                {#                                            <option value="Cancelled">#}
+                                {#                                                Месяц#}
+                                {#                                            </option>#}
+                                {#                                        </select>#}
+                                {#                                    </form>#}
+                                {#                                </div>#}
+                                <h6 class="element-header">
+                                    Все метки
+                                </h6>
+                                <div class="element-content">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="element-box">
+                                                <form>
+                                                    <h5 class="form-header">
+                                                        Просмотр информации по метке
+                                                    </h5>
+                                                    <div class="form-desc">
+                                                        Введите номер метки и ключ-идентификатор
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-form-label col-sm-4" for=""> Номер
+                                                            метки</label>
+                                                        <div class="col-sm-8">
+                                                            <input class="form-control" placeholder="1 - 9999999"
+                                                                   type="text" id="mark_number">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-form-label col-sm-4" for="">
+                                                            Ключ-идентифкатор</label>
+                                                        <div class="col-sm-8">
+                                                            <input class="form-control" placeholder="1 - 9999"
+                                                                   type="text" id="base_name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-buttons-w">
+                                                        <a class="btn btn-primary text-white" id="find_mark_btn">
+                                                            Найти</a>
+                                                    </div>
+
+                                                    <fieldset class="form-group" id="mark_info_fields">
+                                                        <legend><span>Информация</span></legend>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Номер
+                                                                метки</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_mark_number">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Дополнительная информация</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_additional">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Партия</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_batch_number">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Категория
+                                                                товара</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_category">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Количество
+                                                                проверок</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_check_counter">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Страна-производитель</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_country">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                QR-код</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_qr_id">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                NFC-код</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_nfc_msg">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> NFC
+                                                                ID</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_nfc_id">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Дата
+                                                                производства</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_date_of_mnf">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Производитель</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_mnf_id">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Наименование
+                                                                товара</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_product_name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Сервисная
+                                                                информация</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_service_info">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Срок годности
+                                                                (годен до)</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_shelf_life">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Вознаграждение за сканирование</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" readonly placeholder=""
+                                                                       type="text" id="info_reward">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Изображение
+                                                                товара</label>
+                                                            <div class="col-sm-8 img-fluid">
+                                                                <img src="" id="info_img">
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="display-type"></div>
+</div>
+<script src="../../../../../static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../../../../static/bower_components/popper.js/dist/umd/popper.min.js"></script>
+<script src="../../../../../static/bower_components/moment/moment.js"></script>
+<script src="../../../../../static/bower_components/chart.js/dist/Chart.min.js"></script>
+<script src="../../../../../static/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script src="../../../../../static/bower_components/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
+<script src="../../../../../static/bower_components/ckeditor/ckeditor.js"></script>
+<script src="../../../../../static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
+<script src="../../../../../static/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="../../../../../static/bower_components/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
+<script src="../../../../../static/bower_components/dropzone/dist/dropzone.js"></script>
+<script src="../../../../../static/bower_components/editable-table/mindmup-editabletable.js"></script>
+<script src="../../../../../static/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../../../../../static/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="../../../../../static/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<script src="../../../../../static/bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="../../../../../static/bower_components/tether/dist/js/tether.min.js"></script>
+<script src="../../../../../static/bower_components/slick-carousel/slick/slick.min.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/util.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/alert.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/button.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/carousel.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/collapse.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/dropdown.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/modal.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/tab.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/tooltip.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/popover.js"></script>
+<script src="../../../../../static/js/dataTables.bootstrap4.min.js"></script>
+<script src="../../../../../static/js/demo_customizer.js?version=4.4.0"></script>
+<script src="../../../../../static/js/main.js?version=4.4.0"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#mark_info_fields').hide();
+
+        $('#find_mark_btn').click(function () {
+            let base_name = $('#base_name').val();
+            let mark_number = $('#mark_number').val();
+            $.ajax({
+                url: "/apiv2/marks/get_mark_info",
+                data: JSON.stringify({
+                    client_id: 'rdrz',
+                    base_name: base_name,
+                    mark_number: mark_number
+                }),
+                contentType: 'application/json;charset=UTF-8',
+                method: 'POST',
+                success: function (response) {
+                    if (response.msgid == '1') {
+                        $('#mark_info_fields').hide()
+                        alert('Метка с такими параметрами не найдена')
+                    }
+                    if (response.msgid == '0') {
+                        let mark_info = response.result;
+                        $('#info_mark_number').val(mark_info.mark_number);
+                        $('#info_additional').val(mark_info.additionalInfo);
+                        $('#info_batch_number').val(mark_info.batchNumber);
+                        $('#info_category').val(mark_info.categoryID);
+                        $('#info_check_counter').val(mark_info.checkCounter);
+                        $('#info_country').val(mark_info.country);
+                        $('#info_qr_id').val(mark_info.qrID);
+                        $('#info_nfc_msg').val(mark_info.nfcMSG);
+                        $('#info_nfc_id').val(mark_info.nfcID);
+                        $('#info_date_of_mnf').val(mark_info.dateOfMnf);
+                        $('#info_mnf_id').val(mark_info.mnfID);
+                        $('#info_product_name').val(mark_info.productName);
+                        $('#info_service_info').val(mark_info.serviceInfo);
+                        $('#info_shelf_life').val(mark_info.shelfLife);
+                        $('#info_reward').val(mark_info.reward);
+                        try {
+                         $('#info_img').attr('src', mark_info.imageURL);
+                        } finally {
+
+                        }
+                        $('#mark_info_fields').show();
+                    }
+                },
+                error: function (error) {
+
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

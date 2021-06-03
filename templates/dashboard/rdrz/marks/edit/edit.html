@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ProControl</title>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="template language" name="keywords">
+    <meta content="ProControl admin dashboard" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="favicon.png" rel="shortcut icon">
+    <link href="apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet" type="text/css">
+    <link href="../../../../static/bower_components/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/dropzone/dist/dropzone.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css"
+          rel="stylesheet">
+    <link href="../../../../static/bower_components/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/perfect-scrollbar/css/perfect-scrollbar.min.css" rel="stylesheet">
+    <link href="../../../../static/bower_components/slick-carousel/slick/slick.css" rel="stylesheet">
+    <link href="../../../../static/css/main.css?version=4.4.0" rel="stylesheet">
+</head>
+<body class="menu-position-side menu-side-left full-screen with-content-panel">
+<div class="all-wrapper with-side-panel solid-bg-all">
+    <div class="layout-w">
+        <!--------------------
+        START - Mobile Menu
+        -------------------->
+        <div class="menu-mobile menu-activated-on-click color-scheme-dark">
+            <div class="mm-logo-buttons-w"><img src="" width="100" height="30" alt=""/>
+                <div class="mm-buttons">
+                    <div class="content-panel-open">
+                        <div class="os-icon os-icon-grid-circles"></div>
+                    </div>
+                    <div class="mobile-menu-trigger">
+                        <div class="os-icon os-icon-hamburger-menu-1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-and-user">
+                <div class="logged-user-w">
+                    <div class="avatar-w">
+                        <img alt="" src="../../../../static/img/avatar1.jpg">
+                    </div>
+                    <div class="logged-user-info-w">
+                        <div class="logged-user-name">
+                            RDRZ ProControl
+                        </div>
+                        <div class="logged-user-role">
+                            Администратор
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-menu-magic">
+                    <h4>&nbsp;</h4>
+                </div>
+            </div>
+        </div>
+        {% include side_menu %}
+        <div class="content-w">
+            <div class="top-bar color-scheme-transparent"></div>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/dashboard/rdrz/main">Редактирование меток</a>
+                </li>
+            </ul>
+            <div class="content-panel-toggler">
+                <i class="os-icon os-icon-grid-squares-22"></i><span></span>
+            </div>
+            <div class="content-i">
+                <div class="content-box">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="element-wrapper">
+                                {#                                <div class="element-actions">#}
+                                {#                                    <form class="form-inline justify-content-sm-end">#}
+                                {#                                        <select class="form-control form-control-sm rounded">#}
+                                {#                                            <option value="Pending">#}
+                                {#                                                Сегодня#}
+                                {#                                            </option>#}
+                                {#                                            <option value="Active">#}
+                                {#                                                Неделя#}
+                                {#                                            </option>#}
+                                {#                                            <option value="Cancelled">#}
+                                {#                                                Месяц#}
+                                {#                                            </option>#}
+                                {#                                        </select>#}
+                                {#                                    </form>#}
+                                {#                                </div>#}
+                                <h6 class="element-header">
+                                    Редактирование метки
+                                </h6>
+                                <div class="element-content">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="element-box">
+                                                <form>
+                                                    <h5 class="form-header">
+                                                        Редактирование информации по меткам
+                                                    </h5>
+                                                    <div class="form-desc">
+                                                        Введите диапазон номеров меток и ключ-идентификатор
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-form-label col-sm-4" for=""> Номера
+                                                            меток</label>
+                                                        <div class="col-sm-8">
+                                                            <input class="form-control"
+                                                                   placeholder="Например, 2000-4000"
+                                                                   type="text" id="mark_number">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-form-label col-sm-4" for="">
+                                                            Ключ-идентифкатор</label>
+                                                        <div class="col-sm-8">
+                                                            <input class="form-control" placeholder="1 - 9999"
+                                                                   type="text" id="base_name">
+                                                        </div>
+                                                    </div>
+
+                                                    <fieldset class="form-group" id="mark_info_fields">
+                                                        <legend><span>Информация</span></legend>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Дополнительная информация</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_additional">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Партия</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_batch_number">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Категория
+                                                                товара</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_category">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Страна-производитель</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_country">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Дата
+                                                                производства</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_date_of_mnf">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Производитель</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_mnf_id">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Наименование
+                                                                товара</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_product_name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Сервисная
+                                                                информация</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_service_info">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for=""> Срок годности
+                                                                (годен до)</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_shelf_life">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" for="">
+                                                                Вознаграждение за сканирование</label>
+                                                            <div class="col-sm-8">
+                                                                <input class="form-control" placeholder=""
+                                                                       type="text" id="info_reward">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-form-label col-sm-4"
+                                                                   for="">Изображение</label>
+                                                            <div class="custom-file">
+                                                                <div class="offset-sm-4 col-sm-8">
+                                                                    <label class="custom-file-label" for="customFile">Выберите
+                                                                        файл
+                                                                        изображения</label>
+                                                                    <input type="file" name="food_img"
+                                                                           class="custom-file-input"
+                                                                           id="customFile">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-buttons-w">
+                                                            <a class="btn btn-primary text-white" id="set_mark_btn">
+                                                                Изменить</a>
+                                                        </div>
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="display-type"></div>
+</div>
+<script src="../../../../../static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../../../../static/bower_components/popper.js/dist/umd/popper.min.js"></script>
+<script src="../../../../../static/bower_components/moment/moment.js"></script>
+<script src="../../../../../static/bower_components/chart.js/dist/Chart.min.js"></script>
+<script src="../../../../../static/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script src="../../../../../static/bower_components/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
+<script src="../../../../../static/bower_components/ckeditor/ckeditor.js"></script>
+<script src="../../../../../static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
+<script src="../../../../../static/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="../../../../../static/bower_components/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
+<script src="../../../../../static/bower_components/dropzone/dist/dropzone.js"></script>
+<script src="../../../../../static/bower_components/editable-table/mindmup-editabletable.js"></script>
+<script src="../../../../../static/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../../../../../static/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="../../../../../static/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<script src="../../../../../static/bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="../../../../../static/bower_components/tether/dist/js/tether.min.js"></script>
+<script src="../../../../../static/bower_components/slick-carousel/slick/slick.min.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/util.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/alert.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/button.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/carousel.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/collapse.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/dropdown.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/modal.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/tab.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/tooltip.js"></script>
+<script src="../../../../../static/bower_components/bootstrap/js/dist/popover.js"></script>
+<script src="../../../../../static/js/dataTables.bootstrap4.min.js"></script>
+<script src="../../../../../static/js/demo_customizer.js?version=4.4.0"></script>
+<script src="../../../../../static/js/main.js?version=4.4.0"></script>
+<script>
+
+    $(document).ready(function () {
+
+        $('#set_mark_btn').click(function () {
+            let base_name = $('#base_name').val();
+            let mark_numbers = $('#mark_number').val();
+            let additionalInfo = $('#info_additional').val();
+            let batchNumber = $('#info_batch_number').val();
+            let categoryID = $('#info_category').val();
+            let country = $('#info_country').val();
+            let dateOfMnf = $('#info_date_of_mnf').val();
+            let mnfID = $('#info_mnf_id').val();
+            let productName = $('#info_product_name').val();
+            let serviceInfo = $('#info_service_info').val();
+            let shelfLife = $('#info_shelf_life').val();
+            let reward = $('#info_reward').val();
+            var img = document.querySelector('input[type=file]').files[0];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                $.ajax({
+                    url: "/apiv2/marks/set_mark_info",
+                    data: JSON.stringify({
+                        client_id: 'rdrz',
+                        base_name: base_name,
+                        mark_numbers: mark_numbers,
+                        imageURL: reader.result,
+                        additionalInfo: additionalInfo,
+                        batchNumber: batchNumber,
+                        categoryID: categoryID,
+                        country: country,
+                        dateOfMnf: dateOfMnf,
+                        mnfID: mnfID,
+                        productName: productName,
+                        serviceInfo: serviceInfo,
+                        shelfLife: shelfLife,
+                        reward: reward
+
+                    }),
+                    contentType: 'application/json;charset=UTF-8',
+                    method: 'POST',
+                    success: function (response) {
+                        if (response.msgid == '1') {
+                            alert('Часть меток не была обновлена\n' + response.wrong)
+                        }
+                        if (response.msgid == '0') {
+                            alert('Метки успешно изменены')
+                        }
+                    },
+                    error: function (error) {
+
+                    }
+                });
+            }
+            reader.readAsDataURL(img);
+        })
+    })
+</script>
+</body>
+</html>

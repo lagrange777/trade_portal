@@ -1,0 +1,155 @@
+<input id="price_name"
+       class="form-control"
+       required="required"
+       type="text"
+       value="{{ price_name }}"
+       placeholder="Введите название прайса">
+<div class="row mt-3 mb-3 w-100"></div>
+<input id="dialog_id"
+       class="form-control"
+       required="required"
+       type="text"
+       readonly
+       value="{{ dialog_id }}"
+       placeholder="id">
+<table class="table table-lightborder">
+    <thead>
+    <tr>
+        <th class="text-left" width="40%">Наименование (Прайс)</th>
+        <th class="text-left" width="40%">Наименование (Номенклатура)</th>
+        <th class="text-left" width="10%">Кол-во</th>
+        <th class="text-left" width="10%">Стоимость</th>
+    </tr>
+    </thead>
+    <tbody class="msg-table">
+    {% for i in range(0, price_list|length) %}
+        <tr>
+            <td class="text-left" width="40%">
+                <input id="keyword_{{ i }}"
+                       class="form-control"
+                       required="required"
+                       type="text"
+                       value="{{ price_list[i].title }}"
+                       readonly>
+            </td>
+            <td class="text-left"width="40%">
+                <select class="form-control select2 itemselector" id="itemselector_{{ i }}">
+                    <option value="">...</option>
+                    {% for home_item in home_items_list %}
+                        <option {% if price_list[i].key_word == home_item.item_code %} selected {% endif %}
+                                                                                       value="{{ home_item._id }}">
+                            {{ home_item.item_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td class="text-left"width="10%">
+                <input id="item_qty_{{ i }}"
+                       class="form-control"
+                       required="required"
+                       type="text"
+                       value="{{ price_list[i].qty }}">
+            </td>
+            <td class="text-left"width="10%">
+                <input id="item_price_{{ i }}"
+                       class="form-control"
+                       required="required"
+                       type="text"
+                       value="{{ price_list[i].price }}">
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="row mt-5 mb-5">
+    <a class="btn btn-primary text-white save-price-btn mr-5">Сохранить прайс</a>
+</div>
+{#<script src="static/bower_components/jquery/dist/jquery.min.js"></script>#}
+<script src="static/bower_components/popper.js/dist/umd/popper.min.js"></script>
+<script src="static/bower_components/moment/moment.js"></script>
+<script src="static/bower_components/chart.js/dist/Chart.min.js"></script>
+{#<script src="static/bower_components/select2/dist/js/select2.full.min.js"></script>#}
+<script src="static/bower_components/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
+<script src="static/bower_components/ckeditor/ckeditor.js"></script>
+<script src="static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
+<script src="static/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="static/bower_components/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
+<script src="static/bower_components/dropzone/dist/dropzone.js"></script>
+<script src="static/bower_components/editable-table/mindmup-editabletable.js"></script>
+<script src="static/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="static/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<script src="static/bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="static/bower_components/tether/dist/js/tether.min.js"></script>
+<script src="static/bower_components/slick-carousel/slick/slick.min.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/util.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/alert.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/button.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/carousel.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/collapse.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/dropdown.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/modal.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/tab.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/tooltip.js"></script>
+<script src="static/bower_components/bootstrap/js/dist/popover.js"></script>
+<script src="static/js/demo_customizer.js?version=4.4.0"></script>
+<script src="static/js/main.js?version=4.4.0"></script>
+<script src="static/bower_components/bootstrap/js/dist/popover.js"></script>
+{#<script src="static/js/dataTables.bootstrap4.min.js"></script>#}
+
+<script>
+    var mapa_items = {};
+    var mapa_prices = {};
+    var mapa_titles = {};
+    var mapa_qtys = {};
+    $(document).ready(function () {
+
+        {% for index in range(0, price_list|length) %}
+            $('#itemselector_{{index}}').change(function () {
+                mapa_items['{{ index }}'] = $(this).val()
+            });
+        {% endfor %}
+
+        $('.save-price-btn').click(function () {
+            {% for index in range(0, price_list|length) %}
+                mapa_prices['{{ index }}'] = $('#item_price_{{ index }}').val()
+                mapa_titles['{{ index }}'] = $('#keyword_{{ index }}').val();
+                mapa_qtys['{{ index }}'] = $('#item_qty_{{ index }}').val();
+                mapa_items['{{ index }}'] = $('#itemselector_{{ index }}').val();
+            {% endfor %}
+            console.log(mapa_items)
+            console.log(mapa_qtys)
+            console.log(mapa_titles)
+            console.log(mapa_prices)
+            alert()
+            let dialog_id = $('#dialog_id').val();
+            let price_name = $('#price_name').val()
+            if (price_name === '') {
+                alert('Введите название прайса')
+            } else {
+                $.ajax({
+                    url: "/api/save_price",
+                    data: JSON.stringify({
+                        items: mapa_items,
+                        prices: mapa_prices,
+                        titles: mapa_titles,
+                        qtys: mapa_qtys,
+                        dialog_id: dialog_id,
+                        price_name: price_name
+                    }),
+                    contentType: 'application/json;charset=UTF-8',
+                    method: 'POST',
+                    success: function () {
+                        alert('Прайс успешно сохранен')
+                        window.location.reload(true);
+                    },
+                    error: function (error) {
+
+                    }
+                });
+            }
+        });
+    })
+</script>
+
+

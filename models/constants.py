@@ -12,3 +12,13 @@ class SellerDBKeys:
         self.manager = 'MANAGER'
         self.inn = 'INN'
         self.add_info = 'ADD_INFO'
+
+
+class OrderDBKeys:
+    def __init__(self):
+        self.db_name = 'ORDERS'
+        self.id_db = '_id'
+        self.item_id_1c = 'ITEM_1C_ID'
+        self.item_name = 'ITEM_NAME'
+        self.qty = 'QTY'
+        self.sellers = 'SELLERS'

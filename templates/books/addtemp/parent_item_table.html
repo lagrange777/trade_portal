@@ -1,0 +1,7 @@
+{% for item in seller_book %}
+    <tr>
+        <td class="text-left">{{ item.item_name }}</td>
+        <td class="text-left">{{ item.parent_item_name }}</td>
+        <td class="text-left">{{ item.parent_group_name }}</td>
+    </tr>
+{% endfor %}
