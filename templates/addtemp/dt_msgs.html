@@ -1,6 +1,0 @@
-<option value="" disabled selected>...</option>
-{% for message in msgs %}
-<option value="{{message.id}}" onclick="getFullMsg('{{message.id}}')">
-    {{message.time}} {{ message.body[:50]}}
-</option>
-{% endfor %}

@@ -23,6 +23,7 @@ class Seller:
             delay: int,
             manager: str,
             inn: str,
+            rating: float,
             add_info: []
 
     ):
@@ -36,6 +37,7 @@ class Seller:
         self.delay = delay
         self.manager = manager
         self.inn = inn
+        self.rating = rating
         self.add_info = add_info
 
 
@@ -65,6 +67,7 @@ class SellerDBHelper:
                 dbk.delay: s.delay,
                 dbk.manager: s.manager,
                 dbk.inn: s.inn,
+                dbk.rating: s.rating,
                 dbk.add_info: s.add_info
             }
             parsed_sellers.append(seller_as_dict)
@@ -100,6 +103,7 @@ class SellerDBHelper:
                     dbk.delay: new_seller.delay,
                     dbk.manager: new_seller.manager,
                     dbk.inn: new_seller.inn,
+                    dbk.rating: new_seller.rating,
                     dbk.add_info: new_seller.add_info
                 }
             )
@@ -174,6 +178,7 @@ class SellerDBHelper:
                 delay=dbs[dbk.delay],
                 manager=dbs[dbk.manager],
                 inn=dbs[dbk.inn],
+                rating=dbs[dbk.rating],
                 add_info=dbs[dbk.add_info]
             )
             return seller
@@ -192,6 +197,7 @@ class SellerDBHelper:
             dbk.delay: seller.delay,
             dbk.manager: seller.manager,
             dbk.inn: seller.inn,
+            dbk.rating: seller.rating,
             dbk.add_info: seller.add_info
         }
         return seller_as_dict

@@ -11,6 +11,7 @@ class SellerDBKeys:
         self.delay = 'DELAY'
         self.manager = 'MANAGER'
         self.inn = 'INN'
+        self.rating = 'RATING'
         self.add_info = 'ADD_INFO'
 
 
@@ -25,6 +26,13 @@ class OrderDBKeys:
         self.date = 'DATE'
         self.status = 'STATUS'
         self.items = 'ITEMS'
+        self.seller_id = 'SELLER_ID'
+        self.main_bid = 'MAIN_BID'
+        self.add_bid = 'ADD_BID'
+        self.final_bid = 'FINAL_BID'
+        self.bid = 'BID'
+        self.order_id = 'ORDER_ID'
+        self.seller_id_1c = 'SELLER_1C_ID'
 
 
 class OrderStatus:

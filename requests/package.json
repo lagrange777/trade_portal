@@ -1,0 +1,91 @@
+{
+    "DATE": "2021.06.06",
+    "STATUS": "",
+    "_id": "",
+    "ITEMS": [
+        {
+            "ITEM_1C_ID": "123456789",
+            "ITEM_NAME": "КАРТОШКА",
+            "QTY": 10,
+            "SELLERS": [
+                {
+                    "SELLER_ID": "60bcf84b6f1f8dfb6695417d",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                },
+                {
+                    "SELLER_ID": "60bcf86d6f1f8dfb6695417e",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                },
+                {
+                    "SELLER_ID": "60bcf8806f1f8dfb6695417f",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                }
+            ]
+        },
+        {
+            "ITEM_1C_ID": "456789123",
+            "ITEM_NAME": "ОГУРЦЫ",
+            "QTY": 5,
+            "SELLERS": [
+                {
+                    "SELLER_ID": "60bcf84b6f1f8dfb6695417d",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                },
+                {
+                    "SELLER_ID": "60bcf86d6f1f8dfb6695417e",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                },
+                {
+                    "SELLER_ID": "60bcf8806f1f8dfb6695417f",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                }
+            ]
+        },
+        {
+            "ITEM_1C_ID": "987654321",
+            "ITEM_NAME": "ПОМИДОРЫ",
+            "QTY": 40,
+            "SELLERS": [
+                {
+                    "SELLER_ID": "60bcf84b6f1f8dfb6695417d",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                },
+                {
+                    "SELLER_ID": "60bcf86d6f1f8dfb6695417e",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                },
+                {
+                    "SELLER_ID": "60bcf8806f1f8dfb6695417f",
+                    "MAIN_BID": 0,
+                    "ADD_BID": 0,
+                    "FINAL_BID": 0
+                }
+            ]
+        }
+    ]
+}
+
+
+
+{
+    "SELLER_ID": "60bcf84b6f1f8dfb6695417d",
+    "BID": 140,
+    "ITEM_1C_ID": "123456789",
+    "ORDER_ID": "60bdaa5cfc869d567b196a32"
+}
