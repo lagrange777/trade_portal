@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Basic Page Info -->
+    <meta charset="utf-8">
+    <title>Global Group Trade</title>
+
+    <!-- Site favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../static/vendors/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/vendors/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../static/vendors/images/favicon-16x16.png">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/vendors/styles/core.css">
+    <link rel="stylesheet" type="text/css" href="../static/vendors/styles/icon-font.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/vendors/styles/style.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+<div class="pre-loader">
+    <div class="pre-loader-box">
+        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>
+        <div class='loader-progress' id="progress_div">
+            <div class='bar' style="background: #6B9543 !important;" id='bar1'></div>
+        </div>
+        <div class='percent' id='percent1'>0%</div>
+        <div class="loading-text">
+            Загрузка
+        </div>
+    </div>
+</div>
+
+<div class="header">
+    <div class="header-left">
+        <div class="menu-icon dw dw-menu"></div>
+    </div>
+</div>
+
+<div class="right-sidebar">
+    <div class="sidebar-title">
+        <h3 class="weight-600 font-16 text-blue">
+            Layout Settings
+            <span class="btn-block font-weight-400 font-12">User Interface Settings</span>
+        </h3>
+        <div class="close-sidebar" data-toggle="right-sidebar-close">
+            <i class="icon-copy ion-close-round"></i>
+        </div>
+    </div>
+    <div class="right-sidebar-body customscroll">
+        <div class="right-sidebar-body-content">
+            <h4 class="weight-600 font-18 pb-10">Header Background</h4>
+            <div class="sidebar-btn-group pb-30 mb-10">
+                <a href="javascript:void(0);" class="btn btn-outline-primary header-white active">White</a>
+                <a href="javascript:void(0);" class="btn btn-outline-primary header-dark">Dark</a>
+            </div>
+
+            <h4 class="weight-600 font-18 pb-10">Sidebar Background</h4>
+            <div class="sidebar-btn-group pb-30 mb-10">
+                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-light ">White</a>
+                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-dark active">Dark</a>
+            </div>
+
+            <h4 class="weight-600 font-18 pb-10">Menu Dropdown Icon</h4>
+            <div class="sidebar-radio-group pb-10 mb-10">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebaricon-1" name="menu-dropdown-icon" class="custom-control-input"
+                           value="icon-style-1" checked="">
+                    <label class="custom-control-label" for="sidebaricon-1"><i class="fa fa-angle-down"></i></label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebaricon-2" name="menu-dropdown-icon" class="custom-control-input"
+                           value="icon-style-2">
+                    <label class="custom-control-label" for="sidebaricon-2"><i class="ion-plus-round"></i></label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebaricon-3" name="menu-dropdown-icon" class="custom-control-input"
+                           value="icon-style-3">
+                    <label class="custom-control-label" for="sidebaricon-3"><i
+                            class="fa fa-angle-double-right"></i></label>
+                </div>
+            </div>
+
+            <h4 class="weight-600 font-18 pb-10">Menu List Icon</h4>
+            <div class="sidebar-radio-group pb-30 mb-10">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebariconlist-1" name="menu-list-icon" class="custom-control-input"
+                           value="icon-list-style-1" checked="">
+                    <label class="custom-control-label" for="sidebariconlist-1"><i class="ion-minus-round"></i></label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebariconlist-2" name="menu-list-icon" class="custom-control-input"
+                           value="icon-list-style-2">
+                    <label class="custom-control-label" for="sidebariconlist-2"><i class="fa fa-circle-o"
+                                                                                   aria-hidden="true"></i></label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebariconlist-3" name="menu-list-icon" class="custom-control-input"
+                           value="icon-list-style-3">
+                    <label class="custom-control-label" for="sidebariconlist-3"><i class="dw dw-check"></i></label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebariconlist-4" name="menu-list-icon" class="custom-control-input"
+                           value="icon-list-style-4" checked="">
+                    <label class="custom-control-label" for="sidebariconlist-4"><i
+                            class="icon-copy dw dw-next-2"></i></label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebariconlist-5" name="menu-list-icon" class="custom-control-input"
+                           value="icon-list-style-5">
+                    <label class="custom-control-label" for="sidebariconlist-5"><i
+                            class="dw dw-fast-forward-1"></i></label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="sidebariconlist-6" name="menu-list-icon" class="custom-control-input"
+                           value="icon-list-style-6">
+                    <label class="custom-control-label" for="sidebariconlist-6"><i class="dw dw-next"></i></label>
+                </div>
+            </div>
+
+            <div class="reset-options pt-30 text-center">
+                <button class="btn btn-danger" id="reset-settings">Reset Settings</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'nav_menu.html' %}
+<div class="mobile-menu-overlay"></div>
+
+<div class="main-container">
+    <div class="pd-ltr-20 xs-pd-20-10">
+        <div class="min-height-200px">
+
+            <!-- Default Basic Forms Start -->
+            <div class="pd-20 card-box mb-30">
+                <div class="clearfix">
+                    <div class="pull-left">
+                        <h4 class="text-blue h4" id="cur_time"></h4>
+                        <h4 class="text-blue h4">{{ step }}</h4>
+                    </div>
+                </div>
+                {% if is_step_available %}
+                    <form>
+                        {% for i in range(order | length) %}
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].ITEM_NAME }}<br>{{ order[i].QTY }}
+                                </label>
+                                <div class="col-sm-12 col-md-10">
+                                    <input class="form-control offer-value" type="text"
+                                           placeholder="Ваша цена за {{ order[i].QTY }}"
+                                           id="bid_id_{{ i }}">
+                                    <div class="custom-control custom-checkbox mt-3">
+                                        <input type="checkbox" class="custom-control-input"
+                                               id="no_position_check_{{ i }}">
+                                        <label class="custom-control-label" for="no_position_check_{{ i }}">Нет
+                                            позиции</label>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="form-group row">
+                            <div class="col-sm-12 text-right">
+                                <a data-toggle="modal" data-target="#confirmation-modal"
+                                   class="btn btn-primary text-white"
+                                   id="prepare_offer">Отправить заявку</a>
+                            </div>
+                            <div class="col-md-4 col-sm-12 mb-30">
+                                <div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center font-18">
+                                                <h4 class="text-left padding-top-30 mb-5 weight-500">Ваша заявка</h4>
+                                                <p class="text-left padding-top-5 mb-30 weight-300" id="conf_offer">
+                                                    123456</p>
+                                                <div class="padding-bottom-30 row"
+                                                     style="max-width: 170px; margin: 0 auto;">
+                                                    <div class="col-6">
+                                                        <button type="button"
+                                                                class="btn btn-secondary border-radius-100 btn-block confirmation-btn"
+                                                                data-dismiss="modal"><i class="fa fa-times"></i>
+                                                        </button>
+                                                        Нет
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <button type="button" id="send_offer"
+                                                                class="btn btn-primary border-radius-100 btn-block confirmation-btn"
+                                                                data-dismiss="modal"><i class="fa fa-check"></i>
+                                                        </button>
+                                                        Да
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<!-- js -->
+<script src="../static/vendors/scripts/core.js"></script>
+<script src="../static/vendors/scripts/script.min.js"></script>
+<script src="../static/vendors/scripts/process.js"></script>
+<script src="../static/vendors/scripts/layout-settings.js"></script>
+<script>
+
+    $(document).ready(function () {
+        var offers = {};
+
+        $('body').on('input', '.offer-value', function () {
+            this.value = this.value.replace(/[^0-9\.\,]/g, '');
+        });
+
+        {% for i in range(order | length) %}
+            $('#no_position_check_{{ i }}').click(function () {
+                if ($(this).is(':checked')) {
+                    $('#bid_id_{{ i }}').val('0');
+                    $('#bid_id_{{ i }}').prop('disabled', true);
+                } else {
+                    $('#bid_id_{{ i }}').val('');
+                    $('#bid_id_{{ i }}').prop('disabled', false);
+                }
+            });
+        {% endfor %}
+
+        $('#prepare_offer').click(function () {
+            var res = '';
+            var bid = ''
+            {% for i in range(order | length) %}
+                bid = $('#bid_id_{{ i }}').val();
+                if (bid === '0' || bid === '') {
+                    res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY }} - нет предложения<br>'
+                } else {
+                    res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY }}' + ' за ' + $('#bid_id_{{ i }}').val() + '<br>'
+                }
+            {% endfor %}
+            $('#conf_offer').html(res)
+        });
+
+        $('#send_offer').click(function () {
+            {% for i in range(order | length) %}
+                offers['{{ order[i].ITEM_1C_ID}}'] = $('#bid_id_{{ i }}').val();
+            {% endfor %}
+            $.ajax({
+                url: "/api/orders/make_main_bid",
+                data: JSON.stringify({
+                    positions: offers,
+                    seller: '{{ seller_id}}'
+                }),
+                contentType: 'application/json;charset=UTF-8',
+                method: 'POST',
+                success: function (response) {
+                    alert(response);
+                    location.reload()
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        });
+    });
+
+    function clock() {
+        var d = new Date();
+        var hrs = d.getHours();
+        var min = d.getMinutes();
+        var sec = d.getSeconds();
+
+        if (hrs <= 9) hrs = "0" + hrs;
+        if (min <= 9) min = "0" + min;
+        if (sec <= 9) sec = "0" + sec;
+
+        $("#cur_time").html("{{ date }} " + hrs + ":" + min + ":" + sec);
+    }
+
+    setInterval("clock()", 1000);
+</script>
+</body>
+</html>

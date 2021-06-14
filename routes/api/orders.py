@@ -23,6 +23,7 @@ def create_order():
 @orders_routes.route('make_main_bid', methods=['POST'])
 def make_main_bid():
     _json = request.json
+    print(_json)
     bid = db.parse_bid(_json)
     result = db.make_main_bid(bid)
     if result:

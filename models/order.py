@@ -59,6 +59,28 @@ class OrderDBHelper:
     def __init__(self, mongo: PyMongo):
         self.mongo = mongo
 
+    def get_order_for_seller(self, date: str, seller_id: str):
+        order = self.mongo.db[dbk_order.db_name].find_one(
+            {
+                dbk_order.date: date
+            }
+        )
+        order_info = {}
+        order_items = []
+        if isinstance(order, dict):
+            order_info[dbk_order.order_id] = str(order[dbk_order.id_db])
+            for item in order[dbk_order.items]:
+                for seller in item[dbk_order.sellers]:
+                    if seller[dbk_order.seller_id] == seller_id:
+                        order_item = {
+                            dbk_order.item_id_1c: item[dbk_order.item_id_1c],
+                            dbk_order.item_name: item[dbk_order.item_name],
+                            dbk_order.qty: item[dbk_order.qty]
+                        }
+                        order_items.append(order_item)
+            order_info[dbk_order.items] = order_items
+        return order_info
+
     def create_order(self, new_order: Order):
         items = []
         for item in new_order.items:
@@ -392,7 +414,7 @@ class OrderDBHelper:
                         seller_more[dbk_order.main_bid] < seller_more[dbk_order.add_bid]):
                     seller_more[dbk_order.final_bid] = seller_more[dbk_order.main_bid]
                 elif (seller_more[dbk_order.add_bid] != 0 and
-                        seller_more[dbk_order.add_bid] < seller_more[dbk_order.main_bid]):
+                      seller_more[dbk_order.add_bid] < seller_more[dbk_order.main_bid]):
                     seller_more[dbk_order.final_bid] = seller_more[dbk_order.add_bid]
 
                 if seller_more[dbk_order.final_bid] == sys.float_info.max:
