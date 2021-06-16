@@ -33,11 +33,13 @@ class OrderItem:
             item_id_1c: str,
             item_name: str,
             qty: float,
+            unit: str,
             sellers: [{}]
     ):
         self.item_id_1c = item_id_1c
         self.item_name = item_name
         self.qty = qty
+        self.unit = unit
         self.sellers = sellers
 
 
@@ -75,7 +77,8 @@ class OrderDBHelper:
                         order_item = {
                             dbk_order.item_id_1c: item[dbk_order.item_id_1c],
                             dbk_order.item_name: item[dbk_order.item_name],
-                            dbk_order.qty: item[dbk_order.qty]
+                            dbk_order.qty: item[dbk_order.qty],
+                            dbk_order.unit: item[dbk_order.unit]
                         }
                         order_items.append(order_item)
             order_info[dbk_order.items] = order_items
@@ -98,6 +101,7 @@ class OrderDBHelper:
                 dbk_order.item_id_1c: item.item_id_1c,
                 dbk_order.item_name: item.item_name,
                 dbk_order.qty: item.qty,
+                dbk_order.unit: item.unit,
                 dbk_order.sellers: sellers
             }
             items.append(item_as_dict)
@@ -215,11 +219,11 @@ class OrderDBHelper:
             }
 
             for bid in item[dbk_order.sellers]:
-                if bid[dbk_order.main_bid] != 0 and bid[dbk_order.main_bid] < best_bid[dbk_order.main_bid]:
+                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(best_bid[dbk_order.main_bid]):
                     best_bid = bid
-            if best_bid[dbk_order.main_bid] == sys.float_info.max:
+            if float(best_bid[dbk_order.main_bid]) == sys.float_info.max:
                 best_bid[dbk_order.main_bid] = 0
-            if best_bid[dbk_order.add_bid] == sys.float_info.max:
+            if float(best_bid[dbk_order.add_bid]) == sys.float_info.max:
                 best_bid[dbk_order.add_bid] = 0
 
             try:
@@ -264,7 +268,7 @@ class OrderDBHelper:
 
             sorted_offers = sorted(sellers_more,
                                    key=lambda x: (
-                                       x[dbk_order.main_bid],
+                                       float(x[dbk_order.main_bid]),
                                        x[dbk_seller.discount],
                                        x[dbk_seller.delay],
                                        x[dbk_seller.rating]
@@ -289,11 +293,11 @@ class OrderDBHelper:
                 dbk_order.main_bid: sys.float_info.max
             }
             for bid in item[dbk_order.sellers]:
-                if bid[dbk_order.add_bid] != 0 and bid[dbk_order.add_bid] < best_bid[dbk_order.add_bid]:
+                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(best_bid[dbk_order.add_bid]):
                     best_bid = bid
-            if best_bid[dbk_order.add_bid] == sys.float_info.max:
+            if float(best_bid[dbk_order.add_bid]) == sys.float_info.max:
                 best_bid[dbk_order.add_bid] = 0
-            if best_bid[dbk_order.main_bid] == sys.float_info.max:
+            if float(best_bid[dbk_order.main_bid]) == sys.float_info.max:
                 best_bid[dbk_order.main_bid] = 0
             try:
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
@@ -337,7 +341,7 @@ class OrderDBHelper:
 
             sorted_offers = sorted(sellers_more,
                                    key=lambda x: (
-                                       x[dbk_order.add_bid],
+                                       float(x[dbk_order.add_bid]),
                                        x[dbk_seller.discount],
                                        x[dbk_seller.delay],
                                        x[dbk_seller.rating]
@@ -361,10 +365,10 @@ class OrderDBHelper:
                 dbk_order.final_bid: sys.float_info.max,
             }
             for bid in item[dbk_order.sellers]:
-                if bid[dbk_order.main_bid] != 0 and bid[dbk_order.main_bid] < best_bid[dbk_order.final_bid]:
+                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(best_bid[dbk_order.final_bid]):
                     best_bid = bid
                     best_bid[dbk_order.final_bid] = best_bid[dbk_order.main_bid]
-                if bid[dbk_order.add_bid] != 0 and bid[dbk_order.add_bid] < best_bid[dbk_order.final_bid]:
+                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(best_bid[dbk_order.final_bid]):
                     best_bid[dbk_order.final_bid] = best_bid[dbk_order.add_bid]
 
             if best_bid[dbk_order.final_bid] == sys.float_info.max:
@@ -410,21 +414,21 @@ class OrderDBHelper:
                 seller_more[dbk_order.seller_id_1c] = seller_info[dbk_seller.id_1c]
                 seller_more[dbk_order.final_bid] = sys.float_info.max
                 print(seller_more)
-                if (seller_more[dbk_order.main_bid] != 0 and
-                        seller_more[dbk_order.main_bid] < seller_more[dbk_order.add_bid]):
+                if (float(seller_more[dbk_order.main_bid]) != 0 and
+                        float(seller_more[dbk_order.main_bid]) < float(seller_more[dbk_order.add_bid])):
                     seller_more[dbk_order.final_bid] = seller_more[dbk_order.main_bid]
-                elif (seller_more[dbk_order.add_bid] != 0 and
-                      seller_more[dbk_order.add_bid] < seller_more[dbk_order.main_bid]):
+                elif (float(seller_more[dbk_order.add_bid]) != 0 and
+                      float(seller_more[dbk_order.add_bid]) < float(seller_more[dbk_order.main_bid])):
                     seller_more[dbk_order.final_bid] = seller_more[dbk_order.add_bid]
 
-                if seller_more[dbk_order.final_bid] == sys.float_info.max:
+                if float(seller_more[dbk_order.final_bid]) == sys.float_info.max:
                     seller_more[dbk_order.final_bid] = 0
 
                 sellers_more.append(seller_more)
 
             sorted_offers = sorted(sellers_more,
                                    key=lambda x: (
-                                       x[dbk_order.final_bid],
+                                       float(x[dbk_order.final_bid]),
                                        x[dbk_seller.discount],
                                        x[dbk_seller.delay],
                                        x[dbk_seller.rating]
@@ -442,6 +446,7 @@ class OrderDBHelper:
                     item_id_1c=item[dbk_order.item_id_1c],
                     item_name=item[dbk_order.item_name],
                     qty=item[dbk_order.qty],
+                    unit=item[dbk_order.unit],
                     sellers=item[dbk_order.sellers]
                 )
                 items_list.append(new_item)

@@ -23,9 +23,20 @@ def create_order():
 @orders_routes.route('make_main_bid', methods=['POST'])
 def make_main_bid():
     _json = request.json
-    print(_json)
-    bid = db.parse_bid(_json)
-    result = db.make_main_bid(bid)
+    seller_id = _json['seller_id']
+    order_id = _json['order_id']
+    positions = _json['positions']
+    result = False
+    for key in positions:
+        bid = db.parse_bid(
+            {
+                dbk.seller_id: seller_id,
+                dbk.bid: positions[key],
+                dbk.item_id_1c: key,
+                dbk.order_id: order_id
+            }
+        )
+        result = db.make_main_bid(bid)
     if result:
         msg_id = 0
         result = 'success'
@@ -39,8 +50,21 @@ def make_main_bid():
 @orders_routes.route('make_add_bid', methods=['POST'])
 def make_add_bid():
     _json = request.json
-    bid = db.parse_bid(_json)
-    result = db.make_add_bid(bid)
+    seller_id = _json['seller_id']
+    order_id = _json['order_id']
+    positions = _json['positions']
+    result = False
+    for key in positions:
+        bid = db.parse_bid(
+            {
+                dbk.seller_id: seller_id,
+                dbk.bid: positions[key],
+                dbk.item_id_1c: key,
+                dbk.order_id: order_id
+            }
+        )
+        result = db.make_add_bid(bid)
+
     if result:
         msg_id = 0
         result = 'success'

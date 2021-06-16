@@ -22,6 +22,7 @@ class OrderDBKeys:
         self.item_id_1c = 'ITEM_1C_ID'
         self.item_name = 'ITEM_NAME'
         self.qty = 'QTY'
+        self.unit = 'UNIT'
         self.sellers = 'SELLERS'
         self.date = 'DATE'
         self.status = 'STATUS'

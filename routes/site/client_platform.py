@@ -100,17 +100,29 @@ def main_page():
     cur_time_hour = now.hour
     cur_time_min = now.minute
     step = 'Торги неактивны'
-    is_step_available = False
-    if cur_time_hour == 10 and (0 <= cur_time_min <= 59):
+    is_trade_available = False
+    current_step = 0
+    if cur_time_hour == 0 and (0 <= cur_time_min <= 59):
         step = 'Основные торги'
-        is_step_available = True
-    if cur_time_hour == 11 and (0 <= cur_time_min <= 29):
+        is_trade_available = True
+        current_step = 1
+    if cur_time_hour == 1 and (0 <= cur_time_min <= 59):
         step = 'Дополнительные торги'
-        is_step_available = True
+        is_trade_available = True
+        current_step = 2
 
     order = db.get_order_for_seller(cur_date, seller_id)
-    order_id = order['ORDER_ID']
-    order = order['ITEMS']
+
+    best_add_offers = []
+
+    if len(order) != 0:
+        order_id = order['ORDER_ID']
+        if current_step == 2:
+            best_add_offers = db.get_best_offers_by_main_bid(order_id)
+        order = order['ITEMS']
+    else:
+        order_id = 'NO ORDER'
+        order = []
     return render_template(
         'form-basic.html',
         seller_id=seller_id,
@@ -118,7 +130,9 @@ def main_page():
         order=order,
         order_id=order_id,
         step=step,
-        is_step_available=is_step_available)
+        is_trade_available=is_trade_available,
+        current_step=current_step,
+        best_add_offers=best_add_offers)
 
 
 @client_platform_routes.errorhandler(401)

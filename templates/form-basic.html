@@ -146,16 +146,21 @@
                         <h4 class="text-blue h4">{{ step }}</h4>
                     </div>
                 </div>
-                {% if is_step_available %}
+                {% if is_trade_available %}
                     <form>
                         {% for i in range(order | length) %}
                             <div class="form-group row">
-                                <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].ITEM_NAME }}<br>{{ order[i].QTY }}
+                                <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].ITEM_NAME }}<br>{{ order[i].QTY | string + ' ' + order[i].UNIT }}
                                 </label>
                                 <div class="col-sm-12 col-md-10">
-                                    <input class="form-control offer-value" type="text"
-                                           placeholder="Ваша цена за {{ order[i].QTY }}"
+                                    <input class="form-control offer-value" type="number"
+                                           placeholder="Ваша цена за {{ order[i].QTY | string + ' ' + order[i].UNIT }}"
                                            id="bid_id_{{ i }}">
+                                    {% if current_step == 2 %}
+                                        <small class="form-text text-muted">
+                                            {{ 'Лучшее предложение: ' + best_add_offers[order[i].ITEM_1C_ID].MAIN_BID | string }}
+                                        </small>
+                                    {% endif %}
                                     <div class="custom-control custom-checkbox mt-3">
                                         <input type="checkbox" class="custom-control-input"
                                                id="no_position_check_{{ i }}">
@@ -219,60 +224,68 @@
 <script>
 
     $(document).ready(function () {
-        var offers = {};
+        {% if is_trade_available %}
+            var offers = {};
 
-        $('body').on('input', '.offer-value', function () {
-            this.value = this.value.replace(/[^0-9\.\,]/g, '');
-        });
-
-        {% for i in range(order | length) %}
-            $('#no_position_check_{{ i }}').click(function () {
-                if ($(this).is(':checked')) {
-                    $('#bid_id_{{ i }}').val('0');
-                    $('#bid_id_{{ i }}').prop('disabled', true);
-                } else {
-                    $('#bid_id_{{ i }}').val('');
-                    $('#bid_id_{{ i }}').prop('disabled', false);
-                }
+            $('body').on('input', '.offer-value', function () {
+                this.value = this.value.replace(/[^0-9\.\,]/g, '');
             });
-        {% endfor %}
 
-        $('#prepare_offer').click(function () {
-            var res = '';
-            var bid = ''
             {% for i in range(order | length) %}
-                bid = $('#bid_id_{{ i }}').val();
-                if (bid === '0' || bid === '') {
-                    res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY }} - нет предложения<br>'
-                } else {
-                    res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY }}' + ' за ' + $('#bid_id_{{ i }}').val() + '<br>'
-                }
+                $('#no_position_check_{{ i }}').click(function () {
+                    if ($(this).is(':checked')) {
+                        $('#bid_id_{{ i }}').val('0');
+                        $('#bid_id_{{ i }}').prop('disabled', true);
+                    } else {
+                        $('#bid_id_{{ i }}').val('');
+                        $('#bid_id_{{ i }}').prop('disabled', false);
+                    }
+                });
             {% endfor %}
-            $('#conf_offer').html(res)
-        });
 
-        $('#send_offer').click(function () {
-            {% for i in range(order | length) %}
-                offers['{{ order[i].ITEM_1C_ID}}'] = $('#bid_id_{{ i }}').val();
-            {% endfor %}
-            $.ajax({
-                url: "/api/orders/make_main_bid",
-                data: JSON.stringify({
-                    positions: offers,
-                    seller: '{{ seller_id}}'
-                }),
-                contentType: 'application/json;charset=UTF-8',
-                method: 'POST',
-                success: function (response) {
-                    alert(response);
-                    location.reload()
-                },
-                error: function (error) {
-                    alert(error);
-                }
+            $('#prepare_offer').click(function () {
+                var res = '';
+                var bid = ''
+                {% for i in range(order | length) %}
+                    bid = $('#bid_id_{{ i }}').val();
+                    if (bid === '0' || bid === '') {
+                        res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY | string + ' ' + order[i].UNIT}} - нет предложения<br>'
+                    } else {
+                        res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY | string + ' ' + order[i].UNIT }}' + ' за ' + $('#bid_id_{{ i }}').val() + '<br>'
+                    }
+                {% endfor %}
+                $('#conf_offer').html(res)
             });
-        });
-    });
+
+            $('#send_offer').click(function () {
+                {% for i in range(order | length) %}
+                    offers['{{ order[i].ITEM_1C_ID}}'] = $('#bid_id_{{ i }}').val();
+                {% endfor %}
+                $.ajax({
+                {% if current_step == 1 %}
+                    url: "/api/orders/make_main_bid",
+                {% endif %}
+                {% if current_step == 2 %}
+                    url: "/api/orders/make_add_bid",
+                {% endif %}
+                    data: JSON.stringify({
+                        positions: offers,
+                        seller_id: '{{ seller_id}}',
+                        order_id: '{{ order_id }}'
+                    }),
+                    contentType: 'application/json;charset=UTF-8',
+                    method: 'POST',
+                    success: function (response) {
+                        alert(response);
+                        location.reload()
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                });
+            });
+            });
+        {% endif %}
 
     function clock() {
         var d = new Date();

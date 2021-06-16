@@ -1,5 +1,5 @@
 {
-    "DATE": "2021.06.06",
+    "DATE": "16.06.2021",
     "STATUS": "",
     "_id": "",
     "ITEMS": [
@@ -7,6 +7,7 @@
             "ITEM_1C_ID": "123456789",
             "ITEM_NAME": "КАРТОШКА",
             "QTY": 10,
+            "UNIT": "КГ",
             "SELLERS": [
                 {
                     "SELLER_ID": "60bcf84b6f1f8dfb6695417d",
@@ -32,6 +33,7 @@
             "ITEM_1C_ID": "456789123",
             "ITEM_NAME": "ОГУРЦЫ",
             "QTY": 5,
+            "UNIT": "КГ",
             "SELLERS": [
                 {
                     "SELLER_ID": "60bcf84b6f1f8dfb6695417d",
@@ -57,6 +59,7 @@
             "ITEM_1C_ID": "987654321",
             "ITEM_NAME": "ПОМИДОРЫ",
             "QTY": 40,
+            "UNIT": "КГ",
             "SELLERS": [
                 {
                     "SELLER_ID": "60bcf84b6f1f8dfb6695417d",

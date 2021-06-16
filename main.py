@@ -13,4 +13,4 @@ if __name__ == '__main__':
     app.register_blueprint(sellers_routes)
     app.register_blueprint(orders_routes)
     app.register_blueprint(client_platform_routes)
-    app.run(host="127.0.0.1", port="8092", debug=True)
+    app.run(host="0.0.0.0", port="8092", debug=True)
