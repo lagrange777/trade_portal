@@ -106,13 +106,17 @@ class OrderDBHelper:
             }
             items.append(item_as_dict)
 
+        order_id = ObjectId()
+
         self.mongo.db[dbk_order.db_name].insert_one(
             {
+                dbk_order.id_db: order_id,
                 dbk_order.date: new_order.date,
                 dbk_order.status: o_s.ACTIVE,
                 dbk_order.items: items
             }
         )
+        return order_id
 
     def make_main_bid(self, bid):
         bid_order = self.mongo.db[dbk_order.db_name].find_one(

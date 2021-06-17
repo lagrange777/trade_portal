@@ -14,9 +14,9 @@ dbk = OrderDBKeys()
 def create_order():
     _json = request.json
     order = db.parse_order(_json)
-    db.create_order(order)
+    order_id = db.create_order(order)
     msg_id = 0
-    result = 'success'
+    result = {'ORDER_ID': order_id}
     return create_resp(msg_id, result)
 
 
