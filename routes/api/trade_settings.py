@@ -1,8 +1,6 @@
 from flask import request, Blueprint
 
 from app_config import mongo
-from models.constants import OrderDBKeys
-from models.order import OrderDBHelper
 from utils.response_helper import create_resp
 
 settings_routes = Blueprint('settings_routes', __name__, url_prefix='/api/settings/')
@@ -25,14 +23,14 @@ def set_schedule():
 
     mongo.db['SETTINGS'].insert_one(
         {
-            'MAIN_HOUR_START': main_hour_start,
-            'MAIN_HOUR_FINISH': main_hour_finish,
-            'MAIN_MINUTE_START': main_minute_start,
-            'MAIN_MINUTE_FINISH': main_minute_finish,
-            'ADD_HOUR_START': add_hour_start,
-            'ADD_HOUR_FINISH': add_hour_finish,
-            'ADD_MINUTE_START': add_minute_start,
-            'ADD_MINUTE_FINISH': add_minute_finish
+            'MAIN_HOUR_START': int(main_hour_start),
+            'MAIN_HOUR_FINISH': int(main_hour_finish),
+            'MAIN_MINUTE_START': int(main_minute_start),
+            'MAIN_MINUTE_FINISH': int(main_minute_finish),
+            'ADD_HOUR_START': int(add_hour_start),
+            'ADD_HOUR_FINISH': int(add_hour_finish),
+            'ADD_MINUTE_START': int(add_minute_start),
+            'ADD_MINUTE_FINISH': int(add_minute_finish)
         }
     )
 
@@ -43,7 +41,7 @@ def set_schedule():
 
 
 @settings_routes.route('get_schedule', methods=['POST'])
-def set_schedule():
+def get_schedule():
     _json = request.json
     schedule_db = mongo.db['SETTINGS'].find()
 

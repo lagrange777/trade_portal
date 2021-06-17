@@ -1,20 +1,22 @@
 import datetime
-import time
 
 import werkzeug
 from bson import ObjectId
-from flask import request, Blueprint, render_template, redirect, flash
+from flask import request, Blueprint, render_template, redirect
 from flask_login import login_required, login_user, current_user, logout_user
 
 from app_config import mongo, manager
-from models.constants import OrderDBKeys
+from models.constants import OrderDBKeys, SellerDBKeys
 from models.order import OrderDBHelper
+from models.seller import SellerDBHelper
 from utils.response_helper import create_resp
 
 client_platform_routes = Blueprint('client_platform_routes', __name__, url_prefix='/')
 
-db = OrderDBHelper(mongo)
-dbk = OrderDBKeys()
+db_order = OrderDBHelper(mongo)
+dbk_order = OrderDBKeys()
+db_seller = SellerDBHelper(mongo)
+dbk_seller = SellerDBKeys()
 wz = werkzeug.security
 
 
@@ -91,7 +93,7 @@ def logout():
     return redirect('/login')
 
 
-@client_platform_routes.route('trade')
+@client_platform_routes.route('/trade')
 @login_required
 def main_page():
     seller_id = current_user.get_id()
@@ -100,7 +102,7 @@ def main_page():
     cur_time_hour = now.hour
     cur_time_min = now.minute
     step = 'Торги неактивны'
-    schedule_db = mongo.db['SETTINGS'].find()
+    schedule_db = mongo.db['SETTINGS'].find_one()
     is_trade_available = False
     current_step = 0
     if isinstance(schedule_db, dict):
@@ -115,20 +117,20 @@ def main_page():
             is_trade_available = True
             current_step = 2
 
-    order = db.get_order_for_seller(cur_date, seller_id)
+    order = db_order.get_order_for_seller(cur_date, seller_id)
 
     best_add_offers = []
 
     if len(order) != 0:
         order_id = order['ORDER_ID']
         if current_step == 2:
-            best_add_offers = db.get_best_offers_by_main_bid(order_id)
+            best_add_offers = db_order.get_best_offers_by_main_bid(order_id)
         order = order['ITEMS']
     else:
         order_id = 'NO ORDER'
         order = []
     return render_template(
-        'form-basic.html',
+        'trade.html',
         seller_id=seller_id,
         date=cur_date,
         order=order,
@@ -137,6 +139,18 @@ def main_page():
         is_trade_available=is_trade_available,
         current_step=current_step,
         best_add_offers=best_add_offers)
+
+
+@client_platform_routes.route('/seller_settings')
+@login_required
+def seller_settings_page():
+    seller_id = current_user.get_id()
+    seller_info = db_seller.find_by_db_id(seller_id)
+    return render_template('seller_settings.html')
+
+@client_platform_routes.route('/')
+def redirect_1():
+    return redirect('/trade')
 
 
 @client_platform_routes.errorhandler(401)

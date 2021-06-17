@@ -262,12 +262,12 @@
                     offers['{{ order[i].ITEM_1C_ID}}'] = $('#bid_id_{{ i }}').val();
                 {% endfor %}
                 $.ajax({
-                {% if current_step == 1 %}
-                    url: "/api/orders/make_main_bid",
-                {% endif %}
-                {% if current_step == 2 %}
-                    url: "/api/orders/make_add_bid",
-                {% endif %}
+                    {% if current_step == 1 %}
+                        url: "/api/orders/make_main_bid",
+                    {% endif %}
+                    {% if current_step == 2 %}
+                        url: "/api/orders/make_add_bid",
+                    {% endif %}
                     data: JSON.stringify({
                         positions: offers,
                         seller_id: '{{ seller_id}}',
@@ -302,5 +302,4 @@
 
     setInterval("clock()", 1000);
 </script>
-</body>
 </html>
