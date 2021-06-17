@@ -100,16 +100,20 @@ def main_page():
     cur_time_hour = now.hour
     cur_time_min = now.minute
     step = 'Торги неактивны'
+    schedule_db = mongo.db['SETTINGS'].find()
     is_trade_available = False
     current_step = 0
-    if cur_time_hour == 0 and (0 <= cur_time_min <= 59):
-        step = 'Основные торги'
-        is_trade_available = True
-        current_step = 1
-    if cur_time_hour == 1 and (0 <= cur_time_min <= 59):
-        step = 'Дополнительные торги'
-        is_trade_available = True
-        current_step = 2
+    if isinstance(schedule_db, dict):
+        if (schedule_db['MAIN_HOUR_START'] <= cur_time_hour <= schedule_db['MAIN_HOUR_FINISH']
+                and schedule_db['MAIN_MINUTE_START'] <= cur_time_min <= schedule_db['MAIN_MINUTE_FINISH']):
+            step = 'Основные торги'
+            is_trade_available = True
+            current_step = 1
+        if (schedule_db['ADD_HOUR_START'] <= cur_time_hour <= schedule_db['ADD_HOUR_FINISH']
+                and schedule_db['ADD_MINUTE_START'] <= cur_time_min <= schedule_db['ADD_MINUTE_FINISH']):
+            step = 'Дополнительные торги'
+            is_trade_available = True
+            current_step = 2
 
     order = db.get_order_for_seller(cur_date, seller_id)
 
