@@ -117,12 +117,3 @@ JSON
         }
     ]
 }
-
-
-
-{
-    "SELLER_ID": "60bcf84b6f1f8dfb6695417d",
-    "BID": 140,
-    "ITEM_1C_ID": "123456789",
-    "ORDER_ID": "60bdaa5cfc869d567b196a32"
-}

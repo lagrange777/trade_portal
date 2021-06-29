@@ -1,0 +1,165 @@
+/*
+Получить лучшие предложения по результатам основных торгов
+/api/orders/get_best_offers_by_main_bid
+POST
+JSON
+
+Параметры запроса:
+
+- "ORDER_ID": String - id заказа
+
+В ответ придет JSON
+{
+    {
+    "msgid": String - код ответа, всегда "0"
+    "result": {
+        "123456789": - String, id позиции в 1С
+        {
+            "ADD_BID": "200", - String, игнорируем
+            "MAIN_BID": "100", - String, лучшая цена из всех предложений в основных торгах
+            "SELLER_1C_ID": "1000MILITEST", - String, id поставщика в 1С
+            "SELLER_ID": "60bcf84b6f1f8dfb6695417d" - String, id поставщика в БД
+        },
+        "456789123": {
+            "ADD_BID": "300",
+            "MAIN_BID": "500",
+            "SELLER_1C_ID": "1000MILITEST",
+            "SELLER_ID": "60bcf84b6f1f8dfb6695417d"
+        },
+        "987654321": {
+            "ADD_BID": 0,
+            "MAIN_BID": 0,
+            "SELLER_1C_ID": "NO SELLER",
+            "SELLER_ID": "NO SELLER"
+        }
+    }
+}
+
+Ниже пример запроса
+*/
+
+{
+    "ORDER_ID": "60c8e2c2e826c2a4faa732ac"
+}
+
+
+/*
+Получить все предложения по результатам основных торгов
+/api/orders/get_all_offers_by_main_bid
+POST
+JSON
+
+Параметры запроса:
+
+- "ORDER_ID": String - id заказа
+
+В ответ придет JSON
+{
+    "msgid": "0",
+    "result": {
+        "123456789": - String, id позиции в 1С
+        [
+            {
+                "ADD_BID": "200", - String, предложение поставщика в доп. торгах
+                "DELAY": 7, - Int, отсрочка по оплате
+                "DISCOUNT": 25, Float, скидка
+                "MAIN_BID": "100", - String, предложение поставщика в основных торгах
+                "RATING": 4.5, - Float, рейтинг поставщика
+                "SELLER_1C_ID": "1000MILITEST", - id поставщика в 1С
+                "SELLER_ID": "60bcf84b6f1f8dfb6695417d" - id поставщика в БД
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 5,
+                "DISCOUNT": 20,
+                "MAIN_BID": 0,
+                "RATING": 3.7,
+                "SELLER_1C_ID": "2000MILITEST",
+                "SELLER_ID": "60bcf86d6f1f8dfb6695417e"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 10,
+                "DISCOUNT": 10,
+                "MAIN_BID": 0,
+                "RATING": 4.0,
+                "SELLER_1C_ID": "3000MILITEST",
+                "SELLER_ID": "60bcf8806f1f8dfb6695417f"
+            }
+        ],
+        "456789123": [
+            {
+                "ADD_BID": "300",
+                "DELAY": 7,
+                "DISCOUNT": 25,
+                "MAIN_BID": "500",
+                "RATING": 4.5,
+                "SELLER_1C_ID": "1000MILITEST",
+                "SELLER_ID": "60bcf84b6f1f8dfb6695417d"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 5,
+                "DISCOUNT": 20,
+                "MAIN_BID": 0,
+                "RATING": 3.7,
+                "SELLER_1C_ID": "2000MILITEST",
+                "SELLER_ID": "60bcf86d6f1f8dfb6695417e"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 10,
+                "DISCOUNT": 10,
+                "MAIN_BID": 0,
+                "RATING": 4.0,
+                "SELLER_1C_ID": "3000MILITEST",
+                "SELLER_ID": "60bcf8806f1f8dfb6695417f"
+            }
+        ],
+        "987654321": [
+            {
+                "ADD_BID": "300",
+                "DELAY": 7,
+                "DISCOUNT": 25,
+                "MAIN_BID": "0",
+                "RATING": 4.5,
+                "SELLER_1C_ID": "1000MILITEST",
+                "SELLER_ID": "60bcf84b6f1f8dfb6695417d"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 5,
+                "DISCOUNT": 20,
+                "MAIN_BID": 0,
+                "RATING": 3.7,
+                "SELLER_1C_ID": "2000MILITEST",
+                "SELLER_ID": "60bcf86d6f1f8dfb6695417e"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 10,
+                "DISCOUNT": 10,
+                "MAIN_BID": 0,
+                "RATING": 4.0,
+                "SELLER_1C_ID": "3000MILITEST",
+                "SELLER_ID": "60bcf8806f1f8dfb6695417f"
+            }
+        ]
+    }
+}
+
+Ниже пример запроса
+*/
+
+{
+    "ORDER_ID": "60c8e2c2e826c2a4faa732ac"
+}
+
+api/orders/get_all_offers_by_all_bid - все предложения по всем этапам торгов, запрос и ответ аналогичен основным торгам
+api/orders/get_best_offers_by_all_bid - лучшие предложения по всем этапам торгов, запрос и ответ аналогичен основным торгам
+
+api/orders/get_all_offers_by_add_bid - все предложения по дополнительным этапам торгов, запрос и ответ аналогичен основным торгам
+api/orders/get_best_offers_by_add_bid - лучшие предложения по дополнительным этапам торгов, запрос и ответ аналогичен основным торгам
+
+
+
