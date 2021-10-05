@@ -16,8 +16,8 @@ def set_schedule():
 
     add_hour_start = _json['ADD_HOUR_START']
     add_hour_finish = _json['ADD_HOUR_FINISH']
-    add_minute_start = _json['MAIN_MINUTE_START']
-    add_minute_finish = _json['MAIN_MINUTE_FINISH']
+    add_minute_start = _json['ADD_MINUTE_START']
+    add_minute_finish = _json['ADD_MINUTE_FINISH']
 
     mongo.db['SETTINGS'].drop()
 

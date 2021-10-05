@@ -28,6 +28,6 @@ JSON
 
     "ADD_HOUR_START": String - h3
     "ADD_HOUR_FINISH": String - h4
-    "MAIN_MINUTE_START": String - m3
-    "MAIN_MINUTE_FINISH": String - m4
+    "ADD_MINUTE_START": String - m3
+    "ADD_MINUTE_FINISH": String - m4
 }

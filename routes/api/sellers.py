@@ -13,14 +13,21 @@ dbk = SellerDBKeys()
 @sellers_routes.route('add_seller', methods=['POST'])
 def add_seller():
     _json = request.json
-    seller = db.parse_seller(_json)
-    check = db.create_seller(seller)
-    if check:
-        msg_id = 0
-        result = 'seller was created'
-    else:
-        msg_id = 1
-        result = 'such seller already exists'
+    slrs = _json['sellers']
+    created = []
+    updated = []
+
+    for slr in slrs:
+        seller = db.parse_seller(slr)
+        check = db.create_seller(seller)
+        if check:
+            created.append(seller.id_1c)
+        else:
+            db.full_update_seller(seller.id_1c, seller)
+            updated.append(seller.id_1c)
+
+    msg_id = 0
+    result = {'created': created, 'updated': updated}
 
     return create_resp(msg_id, result)
 

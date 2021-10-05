@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import request, Blueprint
 
 from app_config import mongo
@@ -17,6 +18,29 @@ def create_order():
     order_id = db.create_order(order)
     msg_id = 0
     result = {'ORDER_ID': order_id}
+    return create_resp(msg_id, result)
+
+
+@orders_routes.route('get_order_info', methods=['POST'])
+def get_order_info():
+    _json = request.json
+    order_id = _json['ORDER_ID']
+
+    check_order = mongo.db['ORDERS'].find_one(
+        {
+            '_id': ObjectId(order_id)
+        },
+        {
+            '_id': 0
+        }
+    )
+
+    if isinstance(check_order, dict):
+        msg_id = 0
+        result = check_order
+    else:
+        msg_id = 1
+        result = 'Wrong ORDER_ID'
     return create_resp(msg_id, result)
 
 

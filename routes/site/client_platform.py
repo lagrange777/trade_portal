@@ -97,7 +97,8 @@ def logout():
 @login_required
 def main_page():
     seller_id = current_user.get_id()
-    now = datetime.datetime.now()
+    offset = datetime.timezone(datetime.timedelta(hours=3))
+    now = datetime.datetime.now(offset)
     cur_date = now.strftime('%d.%m.%Y')
     cur_time_hour = now.hour
     cur_time_min = now.minute

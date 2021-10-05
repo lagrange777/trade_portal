@@ -111,6 +111,27 @@ class SellerDBHelper:
         else:
             return False
 
+    def full_update_seller(self, id_1c, seller_info: Seller):
+        self.mongo.db[dbk.db_name].update_one(
+            {
+                dbk.id_1c: id_1c
+            },
+            {
+                '$set': {
+                    dbk.full_name: seller_info.full_name,
+                    dbk.short_name: seller_info.short_name,
+                    dbk.email: seller_info.email,
+                    dbk.password_hash: wz.generate_password_hash(seller_info.password_hash),
+                    dbk.discount: seller_info.discount,
+                    dbk.delay: seller_info.delay,
+                    dbk.manager: seller_info.manager,
+                    dbk.inn: seller_info.inn,
+                    dbk.rating: seller_info.rating,
+                    dbk.add_info: seller_info.add_info
+                }
+            }
+        )
+
     def change_seller_password(self, id_db: str, src: int, old_password: str, new_password: str):  # return Boolean
         """
         :param id_db: db id
