@@ -17,7 +17,7 @@ def create_order():
     order = db.parse_order(_json)
     order_id = db.create_order(order)
     msg_id = 0
-    result = {'ORDER_ID': order_id}
+    result = {'ORDER_ID': str(order_id)}
     return create_resp(msg_id, result)
 
 
