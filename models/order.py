@@ -108,14 +108,34 @@ class OrderDBHelper:
 
         order_id = ObjectId()
 
-        self.mongo.db[dbk_order.db_name].insert_one(
+        check_order = self.mongo.db[dbk_order.db_name].find_one(
             {
-                dbk_order.id_db: order_id,
-                dbk_order.date: new_order.date,
-                dbk_order.status: o_s.ACTIVE,
-                dbk_order.items: items
+                dbk_order.id_db: order_id
             }
         )
+        if isinstance(check_order, dict):
+            self.mongo.db[dbk_order.db_name].update_one(
+                {
+                    dbk_order.id_db: order_id
+                },
+                {
+                    '$set':
+                        {
+                            dbk_order.date: new_order.date,
+                            dbk_order.status: o_s.ACTIVE,
+                            dbk_order.items: items
+                        }
+                }
+            )
+        else:
+            self.mongo.db[dbk_order.db_name].insert_one(
+                {
+                    dbk_order.id_db: order_id,
+                    dbk_order.date: new_order.date,
+                    dbk_order.status: o_s.ACTIVE,
+                    dbk_order.items: items
+                }
+            )
         return order_id
 
     def make_main_bid(self, bid):
@@ -223,7 +243,8 @@ class OrderDBHelper:
             }
 
             for bid in item[dbk_order.sellers]:
-                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(best_bid[dbk_order.main_bid]):
+                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(
+                        best_bid[dbk_order.main_bid]):
                     best_bid = bid
             if float(best_bid[dbk_order.main_bid]) == sys.float_info.max:
                 best_bid[dbk_order.main_bid] = 0
@@ -297,7 +318,8 @@ class OrderDBHelper:
                 dbk_order.main_bid: sys.float_info.max
             }
             for bid in item[dbk_order.sellers]:
-                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(best_bid[dbk_order.add_bid]):
+                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(
+                        best_bid[dbk_order.add_bid]):
                     best_bid = bid
             if float(best_bid[dbk_order.add_bid]) == sys.float_info.max:
                 best_bid[dbk_order.add_bid] = 0
@@ -369,10 +391,12 @@ class OrderDBHelper:
                 dbk_order.final_bid: sys.float_info.max,
             }
             for bid in item[dbk_order.sellers]:
-                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(best_bid[dbk_order.final_bid]):
+                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(
+                        best_bid[dbk_order.final_bid]):
                     best_bid = bid
                     best_bid[dbk_order.final_bid] = best_bid[dbk_order.main_bid]
-                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(best_bid[dbk_order.final_bid]):
+                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(
+                        best_bid[dbk_order.final_bid]):
                     best_bid[dbk_order.final_bid] = best_bid[dbk_order.add_bid]
 
             if best_bid[dbk_order.final_bid] == sys.float_info.max:
