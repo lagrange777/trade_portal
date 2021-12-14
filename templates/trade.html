@@ -207,6 +207,51 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-4 col-sm-12 mb-30">
+
+                                <div class="modal fade" id="success-modal" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center font-18">
+                                                <h3 class="mb-20">Заявка отправлена!</h3>
+                                                <div class="mb-30 text-center">
+                                                    <img src="../static/vendors/images/success.png"></div>
+                                                Ваша заявка на {{ step }} принята.<br>
+                                                Вы можете изменить Вашу заявку до окончания текущего этапа торгов.
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                                    Закрыть
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4 col-sm-12 mb-30">
+
+                                <div class="modal fade" id="warning-modal" tabindex="-1" role="dialog"
+                                     aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm modal-dialog-centered">
+                                        <div class="modal-content bg-warning">
+                                            <div class="modal-body text-center">
+                                                <h3 class="mb-15"><i class="fa fa-exclamation-triangle"></i> Что-то
+                                                    пошло не так :(
+                                                </h3>
+                                                <p>Ваша заявка не была принята. Попробуй еще раз.<br>
+                                                    В случае повторного возникновения ошибки обратитесь к организатору
+                                                    торгов.</p>
+                                                <button type="button" class="btn btn-dark" data-dismiss="modal">Ok
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
                     </form>
                 {% endif %}
@@ -245,7 +290,7 @@
 
             $('#prepare_offer').click(function () {
                 var res = '';
-                var bid = ''
+                var bid = '';
                 {% for i in range(order | length) %}
                     bid = $('#bid_id_{{ i }}').val();
                     if (bid === '0' || bid === '') {
@@ -276,11 +321,16 @@
                     contentType: 'application/json;charset=UTF-8',
                     method: 'POST',
                     success: function (response) {
-                        alert(response);
-                        location.reload()
+                        let json = JSON.parse(JSON.stringify(response));
+                        if (json.msgid == 0) {
+                            $('#success-modal').modal('show')
+                        }
+                        if (json.msgid == 1) {
+                            $('#warning-modal').modal('show')
+                        }
                     },
                     error: function (error) {
-                        alert(error);
+                        $('#warning-modal').modal('show');
                     }
                 });
             });

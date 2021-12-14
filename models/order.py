@@ -243,9 +243,13 @@ class OrderDBHelper:
             }
 
             for bid in item[dbk_order.sellers]:
-                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(
-                        best_bid[dbk_order.main_bid]):
-                    best_bid = bid
+                try:
+                    if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(
+                            best_bid[dbk_order.main_bid]):
+                        best_bid = bid
+                except ValueError:
+                    print('parse error get_best_offers_by_main_bid')
+
             if float(best_bid[dbk_order.main_bid]) == sys.float_info.max:
                 best_bid[dbk_order.main_bid] = 0
             if float(best_bid[dbk_order.add_bid]) == sys.float_info.max:
@@ -318,9 +322,12 @@ class OrderDBHelper:
                 dbk_order.main_bid: sys.float_info.max
             }
             for bid in item[dbk_order.sellers]:
-                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(
-                        best_bid[dbk_order.add_bid]):
-                    best_bid = bid
+                try:
+                    if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(
+                            best_bid[dbk_order.add_bid]):
+                        best_bid = bid
+                except ValueError:
+                    print('parse error get_best_offers_by_add_bid')
             if float(best_bid[dbk_order.add_bid]) == sys.float_info.max:
                 best_bid[dbk_order.add_bid] = 0
             if float(best_bid[dbk_order.main_bid]) == sys.float_info.max:
@@ -391,13 +398,19 @@ class OrderDBHelper:
                 dbk_order.final_bid: sys.float_info.max,
             }
             for bid in item[dbk_order.sellers]:
-                if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(
-                        best_bid[dbk_order.final_bid]):
-                    best_bid = bid
-                    best_bid[dbk_order.final_bid] = best_bid[dbk_order.main_bid]
-                if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(
-                        best_bid[dbk_order.final_bid]):
-                    best_bid[dbk_order.final_bid] = best_bid[dbk_order.add_bid]
+                try:
+                    if float(bid[dbk_order.main_bid]) != 0 and float(bid[dbk_order.main_bid]) < float(
+                            best_bid[dbk_order.final_bid]):
+                        best_bid = bid
+                        best_bid[dbk_order.final_bid] = best_bid[dbk_order.main_bid]
+                except ValueError:
+                    print('parse error get_best_offers_by_all_bid main bid')
+                try:
+                    if float(bid[dbk_order.add_bid]) != 0 and float(bid[dbk_order.add_bid]) < float(
+                            best_bid[dbk_order.final_bid]):
+                        best_bid[dbk_order.final_bid] = best_bid[dbk_order.add_bid]
+                except ValueError:
+                    print('parse error get_best_offers_by_all_bid add bid')
 
             if best_bid[dbk_order.final_bid] == sys.float_info.max:
                 best_bid[dbk_order.final_bid] = 0
@@ -491,9 +504,13 @@ class OrderDBHelper:
     @staticmethod
     def parse_bid(dbb):  # return Bid?
         if isinstance(dbb, dict):
+            try:
+                bid_value = float(dbb[dbk_order.bid])
+            except ValueError:
+                bid_value = 0
             bid = Bid(
                 seller=dbb[dbk_order.seller_id],
-                bid=dbb[dbk_order.bid],
+                bid=bid_value,
                 item=dbb[dbk_order.item_id_1c],
                 order=dbb[dbk_order.order_id]
             )

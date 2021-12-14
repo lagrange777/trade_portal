@@ -40,6 +40,9 @@ class User:
     def get_id(self):
         return self.seller_id_db
 
+    def get_1c_id(self):
+        return self.seller_id_1c
+
 
 @manager.user_loader
 def load_user(id_db):
@@ -96,7 +99,7 @@ def logout():
 @client_platform_routes.route('/trade')
 @login_required
 def main_page():
-    seller_id = current_user.get_id()
+    seller_id = current_user.get_1c_id()
     offset = datetime.timezone(datetime.timedelta(hours=3))
     now = datetime.datetime.now(offset)
     cur_date = now.strftime('%d.%m.%Y')
@@ -148,6 +151,7 @@ def seller_settings_page():
     seller_id = current_user.get_id()
     seller_info = db_seller.find_by_db_id(seller_id)
     return render_template('seller_settings.html')
+
 
 @client_platform_routes.route('/')
 def redirect_1():
