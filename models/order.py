@@ -106,17 +106,15 @@ class OrderDBHelper:
             }
             items.append(item_as_dict)
 
-        order_id = ObjectId()
-
         check_order = self.mongo.db[dbk_order.db_name].find_one(
             {
-                dbk_order.id_db: order_id
+                dbk_order.id_db: ObjectId(new_order.id_db)
             }
         )
         if isinstance(check_order, dict):
             self.mongo.db[dbk_order.db_name].update_one(
                 {
-                    dbk_order.id_db: order_id
+                    dbk_order.id_db: ObjectId(new_order.id_db)
                 },
                 {
                     '$set':
@@ -127,7 +125,9 @@ class OrderDBHelper:
                         }
                 }
             )
+            return new_order.id_db
         else:
+            order_id = ObjectId()
             self.mongo.db[dbk_order.db_name].insert_one(
                 {
                     dbk_order.id_db: order_id,
@@ -136,7 +136,7 @@ class OrderDBHelper:
                     dbk_order.items: items
                 }
             )
-        return order_id
+            return order_id
 
     def make_main_bid(self, bid):
         bid_order = self.mongo.db[dbk_order.db_name].find_one(
@@ -286,7 +286,7 @@ class OrderDBHelper:
                 seller_more = seller_offer
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_order.id_db: ObjectId(seller_offer[dbk_order.seller_id])
+                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id]
                     }
                 )
                 seller_more[dbk_seller.discount] = seller_info[dbk_seller.discount]
@@ -363,7 +363,7 @@ class OrderDBHelper:
                 seller_more = seller_offer
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_order.id_db: ObjectId(seller_offer[dbk_order.seller_id])
+                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id]
                     }
                 )
                 seller_more[dbk_seller.discount] = seller_info[dbk_seller.discount]
@@ -446,7 +446,7 @@ class OrderDBHelper:
                 seller_more = seller_offer
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_order.id_db: ObjectId(seller_offer[dbk_order.seller_id])
+                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id]
                     }
                 )
                 seller_more[dbk_seller.discount] = seller_info[dbk_seller.discount]
@@ -454,7 +454,6 @@ class OrderDBHelper:
                 seller_more[dbk_seller.rating] = seller_info[dbk_seller.rating]
                 seller_more[dbk_order.seller_id_1c] = seller_info[dbk_seller.id_1c]
                 seller_more[dbk_order.final_bid] = sys.float_info.max
-                print(seller_more)
                 if (float(seller_more[dbk_order.main_bid]) != 0 and
                         float(seller_more[dbk_order.main_bid]) < float(seller_more[dbk_order.add_bid])):
                     seller_more[dbk_order.final_bid] = seller_more[dbk_order.main_bid]
