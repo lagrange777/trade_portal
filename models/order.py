@@ -105,12 +105,14 @@ class OrderDBHelper:
                 dbk_order.sellers: sellers
             }
             items.append(item_as_dict)
-
-        check_order = self.mongo.db[dbk_order.db_name].find_one(
-            {
-                dbk_order.id_db: ObjectId(new_order.id_db)
-            }
-        )
+        if new_order.id_db == "":
+            check_order = None
+        else:
+            check_order = self.mongo.db[dbk_order.db_name].find_one(
+                {
+                    dbk_order.id_db: ObjectId(new_order.id_db)
+                }
+            )
         if isinstance(check_order, dict):
             self.mongo.db[dbk_order.db_name].update_one(
                 {

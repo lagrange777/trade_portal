@@ -1,0 +1,255 @@
+Создание/обновление заказа для проведения торгов
+/api/orders/create_order
+POST
+JSON
+
+пример запроса
+
+{
+  "DATE": "28.09.2021", //  дата проведения торгов
+  "STATUS": "", // пустая строка, текущий статус торгов
+  "_id": "", // идентифкатор заказа в бд портала, при создании пустая, при обновлении заполняется
+  "ITEMS": [ // список товаров для торгов и поставщиков для участия
+    {
+      "ITEM_1C_ID": "3d598eaf-5581-11dd-8063-001d6034b324", // идентифкатор товара в 1с
+      "ITEM_NAME": "Салат Китайский ", // название товара для поставщиков
+      "QTY": 5000, // кол-во единиц товара
+      "UNIT": "кг", // единицы измерения
+      "SELLERS": [ // список поставщиков
+        {
+          "SELLER_ID": "1f76a666-98c2-11e3-999d-001e67493c8c", // идентифкатор поставщика в 1С
+          "MAIN_BID": 0, // ставка в основные торги
+          "ADD_BID": 0, // ставка в допторги
+          "FINAL_BID": 0 // итоговая ставка
+        },
+        {
+          "SELLER_ID": "b7f68f16-8201-11e9-ab40-ac1f6b446fdb",
+          "MAIN_BID": 0,
+          "ADD_BID": 0,
+          "FINAL_BID": 0
+        },
+        {
+          "SELLER_ID": "08ffc20e-98a3-11e9-ab42-ac1f6b446fdb",
+          "MAIN_BID": 0,
+          "ADD_BID": 0,
+          "FINAL_BID": 0
+        },
+        {
+          "SELLER_ID": "bd6a40ab-b389-11e9-ab46-ac1f6b446fdb",
+          "MAIN_BID": 0,
+          "ADD_BID": 0,
+          "FINAL_BID": 0
+        },
+        {
+          "SELLER_ID": "95d0c216-b45f-11e9-ab46-ac1f6b446fdb",
+          "MAIN_BID": 0,
+          "ADD_BID": 0,
+          "FINAL_BID": 0
+        }
+      ]
+    }
+  ]
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "ORDER_ID": "62b986a3fa8b114f7f87c9fa" //  идентификатор созданного заказа в бд портала
+    }
+}
+
+*****************
+
+Получение инфы о заказе
+/api/orders/get_order_info
+POST
+JSON
+
+пример запроса
+
+{
+  "ORDER_ID": "62b986a3fa8b114f7f87c9fa" // идентификатор заказа в бд портала
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "DATE": "26.06.2022",
+        "ITEMS": [
+            {
+                "ITEM_1C_ID": "3d598eaf-5581-11dd-8063-001d6034b324",
+                "ITEM_NAME": "Салат Китайский ",
+                "QTY": 5000,
+                "SELLERS": [
+                    {
+                        "ADD_BID": 0,
+                        "MAIN_BID": 0,
+                        "SELLER_ID": "1f76a666-98c2-11e3-999d-001e67493c8c"
+                    },
+                    {
+                        "ADD_BID": 0,
+                        "MAIN_BID": 0,
+                        "SELLER_ID": "b7f68f16-8201-11e9-ab40-ac1f6b446fdb"
+                    },
+                    {
+                        "ADD_BID": 0,
+                        "MAIN_BID": 0,
+                        "SELLER_ID": "08ffc20e-98a3-11e9-ab42-ac1f6b446fdb"
+                    },
+                    {
+                        "ADD_BID": 0,
+                        "MAIN_BID": 0,
+                        "SELLER_ID": "bd6a40ab-b389-11e9-ab46-ac1f6b446fdb"
+                    },
+                    {
+                        "ADD_BID": 0,
+                        "MAIN_BID": 0,
+                        "SELLER_ID": "95d0c216-b45f-11e9-ab46-ac1f6b446fdb"
+                    }
+                ],
+                "UNIT": "кг"
+            }
+        ],
+        "STATUS": 1 // статус торгов 0 - закрыты 1 - открыты
+    }
+}
+
+*****************
+
+Получение лучших предложений по основной ставке
+/api/orders/get_best_offers_by_main_bid
+POST
+JSON
+
+пример запроса
+
+{
+  "ORDER_ID": "62b986a3fa8b114f7f87c9fa"
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "3d598eaf-5581-11dd-8063-001d6034b324": { // идентифкатор товара в 1С
+            "ADD_BID": 0, // ставка по допторгам
+            "MAIN_BID": 0, // ставка по основным торгам
+            "SELLER_1C_ID": "NO SELLER", // идентифкатор поставщика в 1с
+            "SELLER_ID": "NO SELLER" // идентифкатор поставщика в бд портала
+        }
+    }
+}
+
+*****************
+
+Получение всех предложений по основной ставке
+/api/orders/get_all_offers_by_main_bid
+POST
+JSON
+
+пример запроса
+
+{
+  "ORDER_ID": "62b986a3fa8b114f7f87c9fa"
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "01f49255-64ee-11e1-9952-001d7da0a1b6": [
+            {
+                "ADD_BID": 0,
+                "DELAY": 0,
+                "DISCOUNT": 0,
+                "MAIN_BID": 0,
+                "RATING": 0,
+                "SELLER_1C_ID": "c95889ee-c7f5-11ea-bdbd-ee01b1d23681",
+                "SELLER_ID": "c95889ee-c7f5-11ea-bdbd-ee01b1d23681"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 0,
+                "DISCOUNT": 0,
+                "MAIN_BID": 0,
+                "RATING": 0,
+                "SELLER_1C_ID": "ab0272b9-b22d-11ea-bdb9-ee01b1d23681",
+                "SELLER_ID": "ab0272b9-b22d-11ea-bdb9-ee01b1d23681"
+            }
+        ],
+        "0fb3679a-0dd5-11dd-9626-001b777627af": [
+            {
+                "ADD_BID": 0,
+                "DELAY": 0,
+                "DISCOUNT": 0,
+                "MAIN_BID": 0,
+                "RATING": 0,
+                "SELLER_1C_ID": "307bc5c4-2fc8-11eb-bdc7-ee01b1d23681",
+                "SELLER_ID": "307bc5c4-2fc8-11eb-bdc7-ee01b1d23681"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 0,
+                "DISCOUNT": 0,
+                "MAIN_BID": 0,
+                "RATING": 0,
+                "SELLER_1C_ID": "88005698-d393-11e9-ab47-ac1f6b446fdb",
+                "SELLER_ID": "88005698-d393-11e9-ab47-ac1f6b446fdb"
+            },
+            {
+                "ADD_BID": 0,
+                "DELAY": 0,
+                "DISCOUNT": 0,
+                "MAIN_BID": 0,
+                "RATING": 0,
+                "SELLER_1C_ID": "95d0c216-b45f-11e9-ab46-ac1f6b446fdb",
+                "SELLER_ID": "95d0c216-b45f-11e9-ab46-ac1f6b446fdb"
+            }
+        ]
+    }
+}
+
+*****************
+
+Получение лучших предложений по допставке
+/api/orders/get_best_offers_by_add_bid
+POST
+JSON
+
+запрос и ответ как выше
+
+*****************
+
+Получение всех предложений по допставке
+/api/orders/get_all_offers_by_add_bid
+POST
+JSON
+
+запрос и ответ как выше
+
+*****************
+
+Получение лучших предложений по всем ставкам
+/api/orders/get_best_offers_by_all_bid
+POST
+JSON
+
+запрос и ответ как выше
+
+*****************
+
+Получение всех предложений по по всем ставкам
+/api/orders/get_all_offers_by_all_bid
+POST
+JSON
+
+запрос и ответ как выше
+
+
+

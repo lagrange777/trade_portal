@@ -1,0 +1,206 @@
+Добавление/обновление поставщика
+/api/sellers/add_seller
+POST
+JSON
+
+пример запроса
+{
+    "sellers": [
+        {
+            "ID_1C": "e86631d4-9190-11e9-ab42-ac1f6b446fdb", // String, идентификатор поставщика в 1С
+            "_id": "", // String,  всегда пустая, идентифкатор поставщика в бд портала
+            "FULL_NAME": "SELLER TEST 27&.06", //  String,  полное наименование поставщика
+            "SHORT_NAME": "SELLER 27.06", //  String,  краткое наименование поставщика
+            "EMAIL": "TEST2706@TEST.TEST", //  String,  почта поставщика, так же логин для входа на портал
+            "PASSWORD_HASH": "TESTPASs", //  String,  пароль поставщика для входа на портал
+            "DISCOUNT": 2, //  Float,  скидка поставщика
+            "DELAY": 3, //  Int, предоставляемая отсрочка платежа
+            "MANAGER": "Петрушко", //  String,  контактное лицо поставщика
+            "INN": "7716923323", //  String,  ИНН поставщика
+            "RATING": 8, //  Float, рейтинг поставщика
+            "ADD_INFO": [] //  Массив строк, доп.инфо поставщика
+        }
+    ]
+}
+
+пример ответа
+{
+    "msgid": "0",
+    "result": {
+        "created": [], // массив строк, 1c id добавленных поставщиков
+        "updated": [ // массив строк, 1c id обновленных поставщиков
+            "e86631d4-9190-11e9-ab42-ac1f6b446fdb"
+        ]
+    }
+}
+
+****************
+
+Получение инфы по всем поставщикам
+/api/sellers/get_all_sellers
+GET
+JSON
+
+запрос пустой
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": [
+        {
+            "ADD_INFO": [
+                "TEST ADDITIONAL INFO 1",
+                "TEST ADDITIONAL INFO 2",
+                "TEST ADDITIONAL INFO 3",
+                "TEST ADDITIONAL INFO 4"
+            ],
+            "DELAY": 7,
+            "DISCOUNT": 25,
+            "EMAIL": "TEST1@TEST.TEST",
+            "FULL_NAME": "TEST FULL NAME 1",
+            "ID_1C": "1000MILITEST",
+            "INN": "1234567890",
+            "MANAGER": "TEST MANAGER 1",
+            "RATING": 4.5,
+            "SHORT_NAME": "TEST SHORT NAME 1",
+            "_id": "60bcf84b6f1f8dfb6695417d"
+        },
+        {
+            "ADD_INFO": [
+                "TEST ADDITIONAL INFO 1",
+                "TEST ADDITIONAL INFO 2",
+                "TEST ADDITIONAL INFO 3",
+                "TEST ADDITIONAL INFO 4"
+            ],
+            "DELAY": 5,
+            "DISCOUNT": 20,
+            "EMAIL": "TEST2@TEST.TEST",
+            "FULL_NAME": "TEST FULL NAME 2",
+            "ID_1C": "2000MILITEST",
+            "INN": "1234567890",
+            "MANAGER": "TEST MANAGER 2",
+            "RATING": 3.7,
+            "SHORT_NAME": "TEST SHORT NAME 2",
+            "_id": "60bcf86d6f1f8dfb6695417e"
+        },
+        {
+            "ADD_INFO": [
+                "TEST ADDITIONAL INFO 1",
+                "TEST ADDITIONAL INFO 2",
+                "TEST ADDITIONAL INFO 3",
+                "TEST ADDITIONAL INFO 4"
+            ],
+            "DELAY": 10,
+            "DISCOUNT": 10,
+            "EMAIL": "TEST3@TEST.TEST",
+            "FULL_NAME": "TEST FULL NAME 3",
+            "ID_1C": "3000MILITEST",
+            "INN": "1234567890",
+            "MANAGER": "TEST MANAGER 3",
+            "RATING": 4.0,
+            "SHORT_NAME": "TEST SHORT NAME 3",
+            "_id": "60bcf8806f1f8dfb6695417f"
+        },
+        {
+            "ADD_INFO": [
+                "TEST ADDITIONAL INFO 1",
+                "TEST ADDITIONAL INFO 2",
+                "TEST ADDITIONAL INFO 3",
+                "TEST ADDITIONAL INFO 4"
+            ],
+            "DELAY": 20,
+            "DISCOUNT": 50,
+            "EMAIL": "TEST4@TEST.TEST",
+            "FULL_NAME": "TEST FULL NAME 4",
+            "ID_1C": "4000MILITEST",
+            "INN": "1234567890",
+            "MANAGER": "TEST MANAGER 4",
+            "RATING": 5.0,
+            "SHORT_NAME": "TEST SHORT NAME 4",
+            "_id": "60bcf8936f1f8dfb66954180"
+        },
+        {
+            "ADD_INFO": [
+                "TEST ADDITIONAL INFO 1",
+                "TEST ADDITIONAL INFO 2",
+                "TEST ADDITIONAL INFO 3",
+                "TEST ADDITIONAL INFO 4"
+            ],
+            "DELAY": 3,
+            "DISCOUNT": 10,
+            "EMAIL": "TEST5@TEST.TEST",
+            "FULL_NAME": "TEST FULL NAME 5",
+            "ID_1C": "5000MILITEST",
+            "INN": "1234567890",
+            "MANAGER": "Тест Менеджер 5",
+            "RATING": 3.0,
+            "SHORT_NAME": "TEST SHORT NAME 5",
+            "_id": "60bcf8b06f1f8dfb66954181"
+        }
+    ]
+}
+
+****************
+
+Получение инфы по поставщику по его id в 1С
+/api/sellers/get_seller_by_1c_id
+POST
+JSON
+
+пример запроса
+
+{
+    "ID_1C": "e86631d4-9190-11e9-ab42-ac1f6b446fdb"
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "ADD_INFO": [],
+        "DELAY": 3,
+        "DISCOUNT": 2,
+        "EMAIL": "TEST2706@TEST.TEST",
+        "FULL_NAME": "SELLER TEST 27&.06",
+        "ID_1C": "e86631d4-9190-11e9-ab42-ac1f6b446fdb",
+        "INN": "7716923323",
+        "MANAGER": "Петрушко",
+        "RATING": 8,
+        "SHORT_NAME": "SELLER 27.06",
+        "_id": "61367d63a9219689b28236ff"
+    }
+}
+
+****************
+
+Получение инфы по поставщику по его id в бд портала
+/api/sellers/get_seller_by_db_id
+POST
+JSON
+
+пример запроса
+
+{
+    "_id": "61367d63a9219689b28236ff"
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "ADD_INFO": [],
+        "DELAY": 3,
+        "DISCOUNT": 2,
+        "EMAIL": "TEST2706@TEST.TEST",
+        "FULL_NAME": "SELLER TEST 27&.06",
+        "ID_1C": "e86631d4-9190-11e9-ab42-ac1f6b446fdb",
+        "INN": "7716923323",
+        "MANAGER": "Петрушко",
+        "RATING": 8,
+        "SHORT_NAME": "SELLER 27.06",
+        "_id": "61367d63a9219689b28236ff"
+    }
+}
