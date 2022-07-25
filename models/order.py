@@ -73,7 +73,7 @@ class OrderDBHelper:
             order_info[dbk_order.order_id] = str(order[dbk_order.id_db])
             for item in order[dbk_order.items]:
                 for seller in item[dbk_order.sellers]:
-                    if seller[dbk_order.seller_id] == seller_id:
+                    if seller[dbk_order.seller_id_1c] == seller_id:
                         order_item = {
                             dbk_order.item_id_1c: item[dbk_order.item_id_1c],
                             dbk_order.item_name: item[dbk_order.item_name],
@@ -91,7 +91,7 @@ class OrderDBHelper:
             for seller in item.sellers:
                 sellers.append(
                     {
-                        dbk_order.seller_id: seller[dbk_order.seller_id],
+                        dbk_order.seller_id_1c: seller[dbk_order.seller_id],
                         dbk_order.main_bid: seller[dbk_order.main_bid],
                         dbk_order.add_bid: seller[dbk_order.add_bid]
                     }
@@ -156,7 +156,7 @@ class OrderDBHelper:
                 if item[dbk_order.item_id_1c] == bid.item:
                     for seller in item[dbk_order.sellers]:
                         # текущая ставка продавца
-                        if seller[dbk_order.seller_id] == bid.seller:
+                        if seller[dbk_order.seller_id_1c] == bid.seller:
                             # создаем новую ставку
                             new_seller_bid = seller
                             new_seller_bid[dbk_order.main_bid] = bid.bid
@@ -200,7 +200,7 @@ class OrderDBHelper:
                 if item[dbk_order.item_id_1c] == bid.item:
                     for seller in item[dbk_order.sellers]:
                         # текущая ставка продавца
-                        if seller[dbk_order.seller_id] == bid.seller:
+                        if seller[dbk_order.seller_id_1c] == bid.seller:
                             # создаем новую ставку
                             new_seller_bid = seller
                             new_seller_bid[dbk_order.add_bid] = bid.bid
@@ -239,7 +239,7 @@ class OrderDBHelper:
         all_items = order[dbk_order.items]
         for item in all_items:
             best_bid = {
-                dbk_order.seller_id: 'NO SELLER',
+                dbk_order.seller_id_1c: 'NO SELLER',
                 dbk_order.main_bid: sys.float_info.max,
                 dbk_order.add_bid: sys.float_info.max
             }
@@ -258,13 +258,15 @@ class OrderDBHelper:
                 best_bid[dbk_order.add_bid] = 0
 
             try:
+                print(best_bid)
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_seller.id_db: ObjectId(best_bid[dbk_order.seller_id])
+                        dbk_seller.id_1c: best_bid[dbk_order.seller_id_1c]
                     }
                 )
                 if isinstance(seller_info, dict):
                     best_bid[dbk_order.seller_id_1c] = str(seller_info[dbk_seller.id_1c])
+                    best_bid[dbk_order.seller_id] = str(seller_info[dbk_seller.id_db])
             except bson.errors.InvalidId:
                 best_bid[dbk_order.seller_id_1c] = 'NO SELLER'
 
@@ -288,7 +290,7 @@ class OrderDBHelper:
                 seller_more = seller_offer
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id]
+                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id_1c]
                     }
                 )
                 seller_more[dbk_seller.discount] = seller_info[dbk_seller.discount]
@@ -319,7 +321,7 @@ class OrderDBHelper:
         all_items = order[dbk_order.items]
         for item in all_items:
             best_bid = {
-                dbk_order.seller_id: 'NO SELLER',
+                dbk_order.seller_id_1c: 'NO SELLER',
                 dbk_order.add_bid: sys.float_info.max,
                 dbk_order.main_bid: sys.float_info.max
             }
@@ -337,11 +339,12 @@ class OrderDBHelper:
             try:
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_seller.id_db: ObjectId(best_bid[dbk_order.seller_id])
+                        dbk_seller.id_1c: best_bid[dbk_order.seller_id_1c]
                     }
                 )
                 if isinstance(seller_info, dict):
                     best_bid[dbk_order.seller_id_1c] = str(seller_info[dbk_seller.id_1c])
+                    best_bid[dbk_order.seller_id] = str(seller_info[dbk_seller.id_db])
             except bson.errors.InvalidId:
                 best_bid[dbk_order.seller_id_1c] = 'NO SELLER'
 
@@ -365,7 +368,7 @@ class OrderDBHelper:
                 seller_more = seller_offer
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id]
+                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id_1c]
                     }
                 )
                 seller_more[dbk_seller.discount] = seller_info[dbk_seller.discount]
@@ -396,7 +399,7 @@ class OrderDBHelper:
         all_items = order[dbk_order.items]
         for item in all_items:
             best_bid = {
-                dbk_order.seller_id: 'NO SELLER',
+                dbk_order.seller_id_1c: 'NO SELLER',
                 dbk_order.final_bid: sys.float_info.max,
             }
             for bid in item[dbk_order.sellers]:
@@ -420,7 +423,7 @@ class OrderDBHelper:
             try:
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_seller.id_db: ObjectId(best_bid[dbk_order.seller_id])
+                        dbk_seller.id_1c: best_bid[dbk_order.seller_id_1c]
                     }
                 )
                 if isinstance(seller_info, dict):
@@ -448,7 +451,7 @@ class OrderDBHelper:
                 seller_more = seller_offer
                 seller_info = self.mongo.db[dbk_seller.db_name].find_one(
                     {
-                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id]
+                        dbk_seller.id_1c: seller_offer[dbk_order.seller_id_1c]
                     }
                 )
                 seller_more[dbk_seller.discount] = seller_info[dbk_seller.discount]
