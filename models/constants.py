@@ -34,6 +34,7 @@ class OrderDBKeys:
         self.bid = 'BID'
         self.order_id = 'ORDER_ID'
         self.seller_id_1c = 'SELLER_1C_ID'
+        self.seller_comment = 'SELLER_COMMENT'
 
 
 class OrderStatus:

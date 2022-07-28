@@ -55,7 +55,8 @@ def make_main_bid():
         bid = db.parse_bid(
             {
                 dbk.seller_id: seller_id,
-                dbk.bid: positions[key],
+                dbk.bid: positions[key][dbk.bid],
+                dbk.seller_comment: positions[key][dbk.seller_comment],
                 dbk.item_id_1c: key,
                 dbk.order_id: order_id
             }
@@ -82,7 +83,8 @@ def make_add_bid():
         bid = db.parse_bid(
             {
                 dbk.seller_id: seller_id,
-                dbk.bid: positions[key],
+                dbk.bid: positions[key][dbk.bid],
+                dbk.seller_comment: positions[key][dbk.seller_comment],
                 dbk.item_id_1c: key,
                 dbk.order_id: order_id
             }

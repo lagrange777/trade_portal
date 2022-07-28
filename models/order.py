@@ -19,12 +19,14 @@ class Bid:
             seller: str,
             item: str,
             bid: float,
-            order: str
+            order: str,
+            seller_comment: str
     ):
         self.seller = seller
         self.item = item
         self.bid = bid
         self.order = order
+        self.seller_comment = seller_comment
 
 
 class OrderItem:
@@ -160,6 +162,7 @@ class OrderDBHelper:
                             # создаем новую ставку
                             new_seller_bid = seller
                             new_seller_bid[dbk_order.main_bid] = bid.bid
+                            new_seller_bid[dbk_order.seller_comment] = bid.seller_comment
                             old_items = all_items
                             old_items.remove(item)
                             new_item = item
@@ -204,6 +207,8 @@ class OrderDBHelper:
                             # создаем новую ставку
                             new_seller_bid = seller
                             new_seller_bid[dbk_order.add_bid] = bid.bid
+                            if bid.seller_comment != '':
+                                new_seller_bid[dbk_order.seller_comment] = bid.seller_comment
                             old_items = all_items
                             old_items.remove(item)
                             new_item = item
@@ -516,7 +521,8 @@ class OrderDBHelper:
                 seller=dbb[dbk_order.seller_id],
                 bid=bid_value,
                 item=dbb[dbk_order.item_id_1c],
-                order=dbb[dbk_order.order_id]
+                order=dbb[dbk_order.order_id],
+                seller_comment=dbb[dbk_order.seller_comment]
             )
             return bid
         else:

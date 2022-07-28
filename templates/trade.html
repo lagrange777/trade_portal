@@ -153,8 +153,8 @@
                                 <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].ITEM_NAME }}<br>{{ order[i].QTY | string + ' ' + order[i].UNIT }}
                                 </label>
                                 <div class="col-sm-12 col-md-10">
+                                    <small>Ваша цена за {{ order[i].QTY | string + ' ' + order[i].UNIT }}</small>
                                     <input class="form-control offer-value" type="number"
-                                           placeholder="Ваша цена за {{ order[i].QTY | string + ' ' + order[i].UNIT }}"
                                            id="bid_id_{{ i }}">
                                     {% if current_step == 2 %}
                                         <small class="form-text text-muted">
@@ -167,8 +167,12 @@
                                         <label class="custom-control-label" for="no_position_check_{{ i }}">Нет
                                             позиции</label>
                                     </div>
+                                    <small>Ваш комментарий к позиции (необязательно)</small>
+                                    <input class="form-control comment-value" type="text"
+                                           id="comment_id_{{ i }}">
                                 </div>
                             </div>
+                            <hr/>
                         {% endfor %}
                         <div class="form-group row">
                             <div class="col-sm-12 text-right">
@@ -183,8 +187,7 @@
                                         <div class="modal-content">
                                             <div class="modal-body text-center font-18">
                                                 <h4 class="text-left padding-top-30 mb-5 weight-500">Ваша заявка</h4>
-                                                <p class="text-left padding-top-5 mb-30 weight-300" id="conf_offer">
-                                                    123456</p>
+                                                <p class="text-left padding-top-5 mb-30 weight-300" id="conf_offer"></p>
                                                 <div class="padding-bottom-30 row"
                                                      style="max-width: 170px; margin: 0 auto;">
                                                     <div class="col-6">
@@ -289,22 +292,31 @@
             {% endfor %}
 
             $('#prepare_offer').click(function () {
-                var res = '';
+                var res = '<br><small>';
                 var bid = '';
+                var comment = '';
                 {% for i in range(order | length) %}
                     bid = $('#bid_id_{{ i }}').val();
+                    comment = $('#comment_id_{{ i }}').val();
+                    res = res + ' ' + "<b>{{ order[i].ITEM_NAME }}:</b><br>Цена за {{ order[i].QTY | string + ' ' + order[i].UNIT}}"
                     if (bid === '0' || bid === '') {
-                        res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY | string + ' ' + order[i].UNIT}} - нет предложения<br>'
+                        res = res + ' ' +  "- нет предложения<br>"
                     } else {
-                        res = res + ' ' + '{{ order[i].ITEM_NAME }}, {{ order[i].QTY | string + ' ' + order[i].UNIT }}' + ' за ' + $('#bid_id_{{ i }}').val() + '<br>'
+                        res = res + " - " + $('#bid_id_{{ i }}').val() + " ₽<br>"
                     }
+                    if (comment !== '') {
+                        res = res + '<b>Комментарий:</b><br>'
+                        res = res + comment + '<br>'
+                    }
+                    res = res + '<hr/>'
                 {% endfor %}
+                res = res + '</small>'
                 $('#conf_offer').html(res)
             });
 
             $('#send_offer').click(function () {
                 {% for i in range(order | length) %}
-                    offers['{{ order[i].ITEM_1C_ID}}'] = $('#bid_id_{{ i }}').val();
+                    offers['{{ order[i].ITEM_1C_ID}}'] = {'BID': $('#bid_id_{{ i }}').val(), 'SELLER_COMMENT' : $('#comment_id_{{ i }}').val()};
                 {% endfor %}
                 $.ajax({
                     {% if current_step == 1 %}
