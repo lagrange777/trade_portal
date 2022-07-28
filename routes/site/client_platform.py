@@ -109,14 +109,18 @@ def main_page():
     schedule_db = mongo.db['SETTINGS'].find_one()
     is_trade_available = False
     current_step = 0
+    main_range_start = schedule_db['MAIN_HOUR_START'] * 60 + schedule_db['MAIN_MINUTE_START']
+    main_range_finish = schedule_db['MAIN_HOUR_FINISH'] * 60 + schedule_db['MAIN_MINUTE_FINISH']
+    add_range_start = schedule_db['ADD_HOUR_START'] * 60 + schedule_db['ADD_MINUTE_START']
+    add_range_finish = schedule_db['ADD_HOUR_FINISH'] * 60 + schedule_db['ADD_MINUTE_FINISH']
+    cur_time = cur_time_hour * 60 + cur_time_min
+
     if isinstance(schedule_db, dict):
-        if (schedule_db['MAIN_HOUR_START'] <= cur_time_hour <= schedule_db['MAIN_HOUR_FINISH']
-                and schedule_db['MAIN_MINUTE_START'] <= cur_time_min <= schedule_db['MAIN_MINUTE_FINISH']):
+        if main_range_start <= cur_time <= main_range_finish:
             step = 'Основные торги'
             is_trade_available = True
             current_step = 1
-        if (schedule_db['ADD_HOUR_START'] <= cur_time_hour <= schedule_db['ADD_HOUR_FINISH']
-                and schedule_db['ADD_MINUTE_START'] <= cur_time_min <= schedule_db['ADD_MINUTE_FINISH']):
+        if add_range_start <= cur_time <= add_range_finish:
             step = 'Дополнительные торги'
             is_trade_available = True
             current_step = 2
