@@ -20,7 +20,6 @@
     <link rel="stylesheet" type="text/css" href="../static/vendors/styles/core.css">
     <link rel="stylesheet" type="text/css" href="../static/vendors/styles/icon-font.min.css">
     <link rel="stylesheet" type="text/css" href="../static/vendors/styles/style.css">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 <body>
@@ -147,7 +146,7 @@
                     </div>
                 </div>
                 {% if is_trade_available %}
-                    <form>
+                    <form class="d-block d-sm-block d-md-block d-lg-none d-xl-none">
                         {% for i in range(order | length) %}
                             <div class="form-group row">
                                 <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].ITEM_NAME }}<br>{{ order[i].QTY | string + ' ' + order[i].UNIT }}
@@ -257,6 +256,34 @@
 
                         </div>
                     </form>
+                    <div class="d-none d-sm-none d-md-none d-lg-block d-xl-block">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">Наименование</th>
+                                <th scope="col">Количество</th>
+                                <th scope="col">Ед. изм.</th>
+                                <th scope="col">Лучшая ставка</th>
+                                <th scope="col">Моя ставка</th>
+                                <th scope="col">Сделать ставку</th>
+                                <th scope="col">Мой комментарий</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in range(order | length) %}
+                            <tr>
+                                <th scope="row">{{ order[i].ITEM_NAME }}</th>
+                                <td>{{ order[i].QTY}}</td>
+                                <td>{{ order[i].UNIT}}</td>
+                                <td>Лучшая ставка</td>
+                                <td>Моя ставка</td>
+                                <td><input class="form-control comment-value" type="text"></td>
+                                <td><input class="form-control comment-value" type="text"></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -265,6 +292,7 @@
 </body>
 
 <!-- js -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="../static/vendors/scripts/core.js"></script>
 <script src="../static/vendors/scripts/script.min.js"></script>
 <script src="../static/vendors/scripts/process.js"></script>
@@ -300,7 +328,7 @@
                     comment = $('#comment_id_{{ i }}').val();
                     res = res + ' ' + "<b>{{ order[i].ITEM_NAME }}:</b><br>Цена за {{ order[i].QTY | string + ' ' + order[i].UNIT}}"
                     if (bid === '0' || bid === '') {
-                        res = res + ' ' +  "- нет предложения<br>"
+                        res = res + ' ' + "- нет предложения<br>"
                     } else {
                         res = res + " - " + $('#bid_id_{{ i }}').val() + " ₽<br>"
                     }
@@ -316,7 +344,10 @@
 
             $('#send_offer').click(function () {
                 {% for i in range(order | length) %}
-                    offers['{{ order[i].ITEM_1C_ID}}'] = {'BID': $('#bid_id_{{ i }}').val(), 'SELLER_COMMENT' : $('#comment_id_{{ i }}').val()};
+                    offers['{{ order[i].ITEM_1C_ID}}'] = {
+                        'BID': $('#bid_id_{{ i }}').val(),
+                        'SELLER_COMMENT': $('#comment_id_{{ i }}').val()
+                    };
                 {% endfor %}
                 $.ajax({
                     {% if current_step == 1 %}

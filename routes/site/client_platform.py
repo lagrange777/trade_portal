@@ -1,5 +1,6 @@
 import datetime
 
+import bson.errors
 import werkzeug
 from bson import ObjectId
 from flask import request, Blueprint, render_template, redirect
@@ -46,9 +47,13 @@ class User:
 
 @manager.user_loader
 def load_user(id_db):
+    try:
+        obj_id = ObjectId(id_db)
+    except bson.errors.InvalidId:
+        return None
     u = mongo.db['SELLERS'].find_one(
         {
-            '_id': ObjectId(id_db)
+            '_id': obj_id
         }
     )
     if not u:
