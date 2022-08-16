@@ -9,6 +9,6 @@ Configuration.account_id = '706814'
 Configuration.secret_key = 'live_yGwjsz7e4-gurjx0sbduIHZjy0OsJyjKeW6HRJTh5Cc'
 app.config['JSON_AS_ASCII'] = False
 app.config[
-    "MONGO_URI"] = "mongodb://vrtimmrtl:Asdqwerty123@3err0.ru:27017/globaltrade_app?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false"
+    "MONGO_URI"] = "mongodb://vrtimmrtl:Asdqwerty123@3err0.ru:27017/globaltrade_appv2?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false"
 manager = LoginManager(app)
 mongo = PyMongo(app)

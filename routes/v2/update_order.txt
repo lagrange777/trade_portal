@@ -1,0 +1,84 @@
+Обновление заявки
+
+POST
+JSON
+
+/v2/api/orders/create-order
+
+запрос
+
+{
+    "id_db": "62fbe6a3fa9f6625b7b3059c", // id заказа для обновления в бд сервиса
+    "id_1c": "order_1c_id",
+    "main_date_start": "2022-08-17",
+    "main_time_start": "10-00",
+    "main_date_finish": "2022-08-18",
+    "main_time_finish": "13-59",
+    "add_date_start": "2022-08-18",
+    "add_time_start": "14-00",
+    "add_date_finish": "2022-08-19",
+    "add_time_finish": "18-00",
+    "title": "Торги бакалея",
+    "desc": "Лучшие торги на диком западе",
+    "status": "active",
+    "sellers": {
+        "seller_id_2": [
+            "item_id_1",
+            "item_id_2",
+            "item_id_3",
+            "item_id_4"
+        ],
+        "seller_id_3": [
+            "item_id_1",
+            "item_id_2",
+            "item_id_3",
+            "item_id_4"
+        ],
+        "seller_id_4": [
+            "item_id_1",
+            "item_id_2",
+            "item_id_3",
+            "item_id_4"
+        ],
+        "seller_id_5": [
+            "item_id_1",
+            "item_id_2",
+            "item_id_3",
+            "item_id_4"
+        ]
+    },
+    "items": [
+         {
+            "item_1c_id": "item_id_1",
+            "item_name": "ITEM1",
+            "qty": 140.0,
+            "unit": "kg"
+        },
+        {
+            "item_1c_id": "item_id_2",
+            "item_name": "ITEM2",
+            "qty": 140.0,
+            "unit": "kg"
+        },
+        {
+            "item_1c_id": "item_id_3",
+            "item_name": "ITEM3",
+            "qty": 140.0,
+            "unit": "kg"
+        },
+        {
+            "item_1c_id": "item_id_4",
+            "item_name": "ITEM4",
+            "qty": 140.0,
+            "unit": "kg"
+        }
+    ]
+}
+
+ответ
+{
+    "msgid": "0",
+    "result": {
+        "order was updated": "62fbe6a3fa9f6625b7b3059c"
+    }
+}
