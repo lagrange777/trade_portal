@@ -64,7 +64,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="input-group mb-0">
-                                    <a class="btn btn-primary btn-lg btn-block" id="do_login">Войти</a>
+                                    <a class="btn btn-primary btn-lg btn-block text-white" id="do_login">Войти</a>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@
            let login = $('#login').val();
            let password = $('#password').val();
            $.ajax({
-                url: "/login",
+                url: "/v2/login",
                 data: JSON.stringify({
                     login: login,
                     password: password

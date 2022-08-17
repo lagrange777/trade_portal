@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Basic Page Info -->
+    <meta charset="utf-8">
+    <title>Global Group Trade</title>
+
+    <!-- Site favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../static/vendors/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/vendors/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../static/vendors/images/favicon-16x16.png">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/vendors/styles/core.css">
+    <link rel="stylesheet" type="text/css" href="../static/vendors/styles/icon-font.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/vendors/styles/style.css">
+
+</head>
+<body>
+<div class="pre-loader">
+    <div class="pre-loader-box">
+{#        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>#}
+        <div class='loader-progress' id="progress_div">
+            <div class='bar' style="background: #6B9543 !important;" id='bar1'></div>
+        </div>
+        <div class='percent' id='percent1'>0%</div>
+        <div class="loading-text">
+            Загрузка
+        </div>
+    </div>
+</div>
+
+{% include 'nav_menu.html' %}
+<div class="mobile-menu-overlay"></div>
+
+<div class="main-container">
+    <div class="pd-ltr-20 xs-pd-20-10">
+        <div class="min-height-200px">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="title">
+                            <h4>Доступные торги</h4>
+                        </div>
+                        <nav aria-label="breadcrumb" role="navigation">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#">Все торги</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container px-0">
+                <h4 class="mb-30 mt-30 text-blue h4">Основные торги</h4>
+                <div class="row">
+                    {% include 'trades_desc_cards/trades_desk_card_main.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_main.html' %}
+                </div>
+                <h4 class="mb-30 mt-30 text-blue h4">Дополнительные торги</h4>
+                <div class="row">
+                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
+                </div>
+                <h4 class="mb-30 mt-30 text-blue h4">Скоро начнутся</h4>
+                <div class="row">
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js -->
+<script src="../static/vendors/scripts/core.js"></script>
+<script src="../static/vendors/scripts/script.min.js"></script>
+<script src="../static/vendors/scripts/process.js"></script>
+<script src="../static/vendors/scripts/layout-settings.js"></script>
+</body>
+</html>

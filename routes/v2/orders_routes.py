@@ -1,3 +1,5 @@
+import sys
+
 from bson import ObjectId
 from flask import Blueprint, request
 from app_config import mongo
@@ -270,7 +272,10 @@ class BidHelper:
                 'comment': bid['comment'],
                 'value': bid['value']
             }
-            result[bid['item_id']].append(norm_bid)
+            k = bid['item_id']
+            if k not in result.keys():
+                result[k] = []
+            result[k].append(norm_bid)
 
         return result
 
@@ -293,7 +298,10 @@ class BidHelper:
                 'comment': bid['comment'],
                 'value': bid['value']
             }
-            result[bid['item_id']].append(norm_bid)
+            k = bid['item_id']
+            if k not in result.keys():
+                result[k] = []
+            result[k].append(norm_bid)
 
         return result
 
@@ -324,16 +332,28 @@ class BidHelper:
         return result
 
     def get_best_all_bids(self):
-        all_bids = self.get_all_add_bids()
+        best_main_bids = self.get_best_main_bids()
+        best_add_bids = self.get_best_add_bids()
+
+        unique_items = list(best_main_bids.keys())
         result = {}
-        for item_id, item_bids in all_bids.items():
-            max_value = -1.0
+
+        for each in best_add_bids.keys():
+            if each not in unique_items:
+                unique_items.append(each)
+
+        for item_id in unique_items:
+            max_value = sys.float_info.max
             max_bid = {}
-            for bid in item_bids:
-                if bid['value'] > max_value:
-                    max_value = bid['value']
-                    max_bid = bid
+            if item_id in best_main_bids.keys():
+                max_value = best_main_bids[item_id]['value']
+                max_bid = best_main_bids[item_id]
+            if item_id in best_add_bids.keys():
+                tmp = best_add_bids[item_id]['value']
+                if tmp <= max_value:
+                    max_bid = best_add_bids[item_id]
             result[item_id] = max_bid
+
         return result
 
 
@@ -425,61 +445,46 @@ def make_add_bid():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get-best-offers-by-main_bid', methods=['POST'])
-def get_best_offers_by_main_bid():
+@orders_routes_v2.route('get-best-by-main-bid', methods=['POST'])
+def get_best_by_main_bid():
     _json = request.json
     order_id = _json['order_id']
-
+    result = BidHelper(order_id).get_best_main_bids()
     msg_id = 0
-    result = best_offers
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get_all_offers_by_main_bid', methods=['POST'])
-def get_all_offers_by_main_bid():
+@orders_routes_v2.route('get-all-by-main-bid', methods=['POST'])
+def get_all_by_main_bid():
     _json = request.json
-    order_id = _json[dbk.order_id]
-    all_offers = db.get_all_offers_by_main_bid(order_id)
+    order_id = _json['order_id']
+    result = BidHelper(order_id).get_all_main_bids()
     msg_id = 0
-    result = all_offers
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get_best_offers_by_add_bid', methods=['POST'])
-def get_best_offers_by_add_bid():
+@orders_routes_v2.route('get-best-by-add-bid', methods=['POST'])
+def get_best_by_add_bid():
     _json = request.json
-    order_id = _json[dbk.order_id]
-    best_offers = db.get_best_offers_by_add_bid(order_id)
+    order_id = _json['order_id']
+    result = BidHelper(order_id).get_best_add_bids()
     msg_id = 0
-    result = best_offers
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get_all_offers_by_add_bid', methods=['POST'])
-def get_all_offers_by_add_bid():
+@orders_routes_v2.route('get-all-by-add-bid', methods=['POST'])
+def get_all_by_add_bid():
     _json = request.json
-    order_id = _json[dbk.order_id]
-    all_offers = db.get_all_offers_by_add_bid(order_id)
+    order_id = _json['order_id']
+    result = BidHelper(order_id).get_all_add_bids()
     msg_id = 0
-    result = all_offers
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get_best_offers_by_all_bid', methods=['POST'])
-def get_best_offers_by_all_bid():
+@orders_routes_v2.route('get-best-by-all-bids', methods=['POST'])
+def get_best_by_all_bids():
     _json = request.json
-    order_id = _json[dbk.order_id]
-    best_offers = db.get_best_offers_by_all_bid(order_id)
+    order_id = _json['order_id']
+    result = BidHelper(order_id).get_best_all_bids()
     msg_id = 0
-    result = best_offers
-    return create_resp(msg_id, result)
-
-
-@orders_routes_v2.route('get_all_offers_by_all_bid', methods=['POST'])
-def get_all_offers_by_all_bid():
-    _json = request.json
-    order_id = _json[dbk.order_id]
-    all_offers = db.get_all_offers_by_all_bid(order_id)
-    msg_id = 0
-    result = all_offers
     return create_resp(msg_id, result)

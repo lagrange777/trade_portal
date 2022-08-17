@@ -1,18 +1,18 @@
 class SellerDBKeys:
     def __init__(self):
-        self.db_name = 'SELLERS'
-        self.id_1c = 'ID_1C'
+        self.db_name = 'sellers'
+        self.id_1c = 'id_1c'
         self.id_db = '_id'
-        self.full_name = 'FULL_NAME'
-        self.short_name = 'SHORT_NAME'
-        self.email = 'EMAIL'
-        self.password_hash = 'PASSWORD_HASH'
-        self.discount = 'DISCOUNT'
-        self.delay = 'DELAY'
-        self.manager = 'MANAGER'
-        self.inn = 'INN'
-        self.rating = 'RATING'
-        self.add_info = 'ADD_INFO'
+        self.full_name = 'full_name'
+        self.short_name = 'short_name'
+        self.email = 'email'
+        self.password_hash = 'password_hash'
+        self.discount = 'discount'
+        self.delay = 'delay'
+        self.manager = 'manager'
+        self.inn = 'inn'
+        self.rating = 'rating'
+        self.add_info = 'add_info'
 
 
 class OrderDBKeys:
