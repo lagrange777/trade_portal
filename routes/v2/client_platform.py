@@ -24,6 +24,21 @@ class TradeStage(Enum):
 
 
 class TimeHelper:
+
+    @staticmethod
+    def string_datetime_to_timestamp(date_string, time_string):
+        date_components = date_string.split('-')
+        time_components = time_string.split('-')
+        timestamp = datetime.datetime(
+            int(date_components[0]),
+            int(date_components[1]),
+            int(date_components[2]),
+            int(time_components[0]),
+            int(time_components[1]),
+            0,
+            0
+        )
+        return timestamp
     def __init__(
             self,
             main_date_start,
@@ -35,20 +50,12 @@ class TimeHelper:
             add_date_finish,
             add_time_finish,
     ):
-        self.main_date_start_long = int(main_date_start.replace('-', ''))
-        self.main_date_finish_long = int(main_date_finish.replace('-', ''))
-        self.add_date_start_long = int(add_date_start.replace('-', ''))
-        self.add_date_finish_long = int(add_date_finish.replace('-', ''))
+        self.main_start_long = self.string_datetime_to_timestamp(main_date_start, main_time_start)
+        self.main_finish_long = self.string_datetime_to_timestamp(main_date_finish, main_time_finish)
+        self.add_start_long = self.string_datetime_to_timestamp(add_date_start, add_time_start)
+        self.add_finish_long = self.string_datetime_to_timestamp(add_date_finish, add_time_finish)
 
-        main_time_start_tmp = main_time_start.split('-')
-        main_time_finish_tmp = main_time_finish.split('-')
-        add_time_start_tmp = add_time_start.split('-')
-        add_time_finish_tmp = add_time_finish.split('-')
 
-        self.main_time_start_long = int(main_time_start_tmp[0]) * 60 + int(main_time_start_tmp[1])
-        self.main_time_finish_long = int(main_time_finish_tmp[0]) * 60 + int(main_time_finish_tmp[1])
-        self.add_time_start_long = int(add_time_start_tmp[0]) * 60 + int(add_time_start_tmp[1])
-        self.add_time_finish_long = int(add_time_finish_tmp[0]) * 60 + int(add_time_finish_tmp[1])
 
     def get_current_stage(self, cur_time, cur_date):
         cur_date_long = int(cur_date.replace('-', ''))
