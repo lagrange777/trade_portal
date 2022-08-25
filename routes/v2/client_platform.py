@@ -6,6 +6,7 @@ import werkzeug
 from bson import ObjectId
 from flask import request, Blueprint, render_template, redirect
 from flask_login import login_required, login_user, current_user, logout_user
+from markupsafe import Markup
 
 from app_config import mongo, manager
 from utils.response_helper import create_resp
@@ -39,6 +40,7 @@ class TimeHelper:
             0
         )
         return timestamp
+
     def __init__(
             self,
             main_date_start,
@@ -48,208 +50,209 @@ class TimeHelper:
             add_date_start,
             add_time_start,
             add_date_finish,
-            add_time_finish,
+            add_time_finish
     ):
         self.main_start_long = self.string_datetime_to_timestamp(main_date_start, main_time_start)
         self.main_finish_long = self.string_datetime_to_timestamp(main_date_finish, main_time_finish)
         self.add_start_long = self.string_datetime_to_timestamp(add_date_start, add_time_start)
         self.add_finish_long = self.string_datetime_to_timestamp(add_date_finish, add_time_finish)
 
-
-
     def get_current_stage(self, cur_time, cur_date):
-        cur_date_long = int(cur_date.replace('-', ''))
-        cur_time_tmp = cur_time.split('-')
-        cur_time_long = int(cur_time_tmp[0]) * 60 + int(cur_time_tmp[1])
-
-        if (
-            cur_date_long < self.main_date_start_long
-            or (
-                self.main_date_start_long <= cur_date_long <= self.main_date_finish_long
-                and
-                cur_time_long < self.main_time_start_long
-            )
-        ):
+        cur_date_long = self.string_datetime_to_timestamp(cur_date, cur_time)
+        if cur_date_long < self.main_start_long:
             return TradeStage.NOT_STARTED
-
-        if (
-            self.main_date_start_long <= cur_date_long <= self.main_date_finish_long
-            and
-                self.main_time_start_long <= cur_time_long <= self.main_time_finish_long
-        ):
+        if self.main_start_long <= cur_date_long <= self.main_finish_long:
             return TradeStage.MAIN
+        if self.main_finish_long < cur_date_long < self.add_start_long:
+            return TradeStage.BETWEEN_MAIN_AND_ADD
+        if self.add_start_long <= cur_date_long <= self.add_finish_long:
+            return TradeStage.ADD
+        if cur_date_long > self.add_finish_long:
+            return TradeStage.FINISHED
 
-        if (
-            self.add_date_start_long <= cur_date_long <= self.main_date_finish_long
-        ):
 
-    class TradeHelper:
-        def __init__(self, seller_id_1c):
-            self.seller_id_1c = seller_id_1c
+class TradeHelper:
+    def __init__(self, seller_id_1c):
+        self.seller_id_1c = seller_id_1c
 
-        def get_orders_ids_for_seller(self):
-            all_orders = mongo.db['orders'].find({'status': 'active'})
+    def get_grouped_orders_for_seller(self, cur_date, cur_time):
+        all_orders = mongo.db['orders'].find({'status': 'active'})
 
-            seller_orders = []
+        seller_orders = []
 
-            for order in all_orders:
-                if self.seller_id_1c in order['sellers'].keys():
-                    tmp_order = order
-                    tmp_order['_id'] = str(tmp_order['_id'])
-                    seller_orders.append(tmp_order)
+        grouped_orders = {
+            TradeStage.NOT_STARTED.value: [],
+            TradeStage.MAIN.value: [],
+            TradeStage.BETWEEN_MAIN_AND_ADD.value: [],
+            TradeStage.ADD.value: [],
+            TradeStage.FINISHED.value: []
+        }
 
-            return seller_orders
+        for order in all_orders:
+            if self.seller_id_1c in order['sellers'].keys():
+                tmp_order = order
+                tmp_order['_id'] = str(tmp_order['_id'])
+                seller_orders.append(tmp_order)
 
-    class User:
-        def __init__(self, seller_id_1c, seller_id_db):
-            self.seller_id_1c = seller_id_1c
-            self.seller_id_db = seller_id_db
+        for order in seller_orders:
+            time_helper = TimeHelper(
+                main_date_start=order['main_date_start'],
+                main_time_start=order['main_time_start'],
+                main_date_finish=order['main_date_finish'],
+                main_time_finish=order['main_time_finish'],
+                add_date_start=order['add_date_start'],
+                add_time_start=order['add_time_start'],
+                add_date_finish=order['add_date_finish'],
+                add_time_finish=order['add_time_finish']
+            )
+            stage = time_helper.get_current_stage(cur_time, cur_date)
+            grouped_orders[stage.value].append(order)
+        return grouped_orders
 
-        @staticmethod
-        def is_authenticated():
-            return True
 
-        @staticmethod
-        def is_active():
-            return True
+class User:
+    def __init__(self, seller_id_1c, seller_id_db):
+        self.seller_id_1c = seller_id_1c
+        self.seller_id_db = seller_id_db
 
-        @staticmethod
-        def is_anonymous():
-            return False
+    @staticmethod
+    def is_authenticated():
+        return True
 
-        def get_id(self):
-            return self.seller_id_db
+    @staticmethod
+    def is_active():
+        return True
 
-        def get_1c_id(self):
-            return self.seller_id_1c
+    @staticmethod
+    def is_anonymous():
+        return False
 
-    @manager.user_loader
-    def load_user(id_db):
-        try:
-            obj_id = ObjectId(id_db)
-        except bson.errors.InvalidId:
-            return None
-        u = mongo.db['sellers'].find_one(
+    def get_id(self):
+        return self.seller_id_db
+
+    def get_1c_id(self):
+        return self.seller_id_1c
+
+
+@manager.user_loader
+def load_user(id_db):
+    try:
+        obj_id = ObjectId(id_db)
+    except bson.errors.InvalidId:
+        return None
+    u = mongo.db['sellers'].find_one(
+        {
+            '_id': obj_id
+        }
+    )
+    if not u:
+        return None
+    return User(u['id_1c'], str(u['_id']))
+
+
+@client_platform_routes_v2.route('/login', methods=['GET', 'POST'])
+def login_page():
+    if request.method == 'POST':
+        _json = request.json
+        login = _json['login']
+        password = _json['password']
+        check_user = mongo.db['sellers'].find_one(
             {
-                '_id': obj_id
+                'email': login
             }
         )
-        if not u:
-            return None
-        return User(u['id_1c'], str(u['_id']))
-
-    @client_platform_routes_v2.route('/login', methods=['GET', 'POST'])
-    def login_page():
-        if request.method == 'POST':
-            _json = request.json
-            login = _json['login']
-            password = _json['password']
-            check_user = mongo.db['sellers'].find_one(
-                {
-                    'email': login
-                }
-            )
-            if isinstance(check_user, dict):
-                check_password = wz.check_password_hash(check_user['password_hash'], password)
-                if check_password:
-                    user = User(
-                        seller_id_1c=check_user['id_1c'],
-                        seller_id_db=str(check_user['_id'])
-                    )
-                    login_user(user)
-                    return redirect('/v2/trades-desk')
-                else:
-                    msg_id = 1
-                    result = 'wrong password'
-                    return create_resp(msg_id, result)
+        if isinstance(check_user, dict):
+            check_password = wz.check_password_hash(check_user['password_hash'], password)
+            if check_password:
+                user = User(
+                    seller_id_1c=check_user['id_1c'],
+                    seller_id_db=str(check_user['_id'])
+                )
+                login_user(user)
+                return redirect('/v2/trades-desk')
             else:
-                msg_id = 2
-                result = 'wrong login'
+                msg_id = 1
+                result = 'wrong password'
                 return create_resp(msg_id, result)
         else:
-            if current_user.is_authenticated:
-                return redirect('/v2/trades-desk')
-            return render_template('login.html')
+            msg_id = 2
+            result = 'wrong login'
+            return create_resp(msg_id, result)
+    else:
+        if current_user.is_authenticated:
+            return redirect('/v2/trades-desk')
+        return render_template('login.html')
 
-    @client_platform_routes_v2.route('logout')
-    def logout():
-        logout_user()
-        return redirect('/login')
 
-    @client_platform_routes_v2.route('trades-desk')
-    def trades_desk():
-        seller_id = current_user.get_1c_id()
-        offset = datetime.timezone(datetime.timedelta(hours=3))
-        now = datetime.datetime.now(offset)
-        cur_date = now.strftime('%d.%m.%Y')
-        cur_time_hour = now.hour
-        cur_time_min = now.minute
+@client_platform_routes_v2.route('logout')
+def logout():
+    logout_user()
+    return redirect('/login')
 
-        return render_template('trades_desk.html')
 
-    @client_platform_routes_v2.route('/trade')
-    @login_required
-    def main_page():
-        seller_id = current_user.get_1c_id()
-        offset = datetime.timezone(datetime.timedelta(hours=3))
-        now = datetime.datetime.now(offset)
-        cur_date = now.strftime('%d.%m.%Y')
-        cur_time_hour = now.hour
-        cur_time_min = now.minute
-        step = 'Торги неактивны'
-        schedule_db = mongo.db['SETTINGS'].find_one()
-        is_trade_available = False
-        current_step = 0
-        main_range_start = schedule_db['MAIN_HOUR_START'] * 60 + schedule_db['MAIN_MINUTE_START']
-        main_range_finish = schedule_db['MAIN_HOUR_FINISH'] * 60 + schedule_db['MAIN_MINUTE_FINISH']
-        add_range_start = schedule_db['ADD_HOUR_START'] * 60 + schedule_db['ADD_MINUTE_START']
-        add_range_finish = schedule_db['ADD_HOUR_FINISH'] * 60 + schedule_db['ADD_MINUTE_FINISH']
-        cur_time = cur_time_hour * 60 + cur_time_min
+@client_platform_routes_v2.route('trades-desk')
+def trades_desk():
+    seller_id = current_user.get_1c_id()
+    offset = datetime.timezone(datetime.timedelta(hours=3))
+    now = datetime.datetime.now(offset)
+    cur_date = now.strftime('%Y-%m-%d')
+    cur_time = str(now.hour) + '-' + str(now.minute)
 
-        if isinstance(schedule_db, dict):
-            if main_range_start <= cur_time <= main_range_finish:
-                step = 'Основные торги'
-                is_trade_available = True
-                current_step = 1
-            if add_range_start <= cur_time <= add_range_finish:
-                step = 'Дополнительные торги'
-                is_trade_available = True
-                current_step = 2
+    msgid = 0
+    result = TradeHelper(seller_id).get_grouped_orders_for_seller(cur_date, cur_time)
+    print(result)
+    templates_not_started = []
+    templates_main = []
+    templates_between = []
+    templates_add = []
+    templates_finished = []
+    for each in result[5]:
+        each['items_count'] = each['sellers'][seller_id]
+        templates_not_started.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+        templates_main.append(Markup(render_template('trades_desc_cards/trades_desk_card_main.html', order=each)))
+        templates_between.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+        templates_add.append(Markup(render_template('trades_desc_cards/trades_desk_card_add.html', order=each)))
+        templates_finished.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+    return render_template(
+        'trades_desk.html',
+        order=
+        {
+            1: templates_not_started,
+            2: templates_main,
+            3: templates_between,
+            4: templates_add,
+            5: templates_finished
+        }
+    )
 
-        order = db_order.get_order_for_seller(cur_date, seller_id)
 
-        best_add_offers = []
+@client_platform_routes_v2.route('/trade')
+@login_required
+def main_page():
+    seller_id = current_user.get_1c_id()
+    _args = request.args
+    order_id = _args.get('orderid')
 
-        if len(order) != 0:
-            order_id = order['ORDER_ID']
-            if current_step == 2:
-                best_add_offers = db_order.get_best_offers_by_main_bid(order_id)
-            order = order['ITEMS']
-        else:
-            order_id = 'NO ORDER'
-            order = []
-        return render_template(
-            'trade.html',
-            seller_id=seller_id,
-            date=cur_date,
-            order=order,
-            order_id=order_id,
-            step=step,
-            is_trade_available=is_trade_available,
-            current_step=current_step,
-            best_add_offers=best_add_offers)
+    bid_helper = BidHelper
 
-    @client_platform_routes_v2.route('/seller_settings')
-    @login_required
-    def seller_settings_page():
-        seller_id = current_user.get_id()
-        seller_info = db_seller.find_by_db_id(seller_id)
-        return render_template('seller_settings.html')
+    return render_template(
+        'trade.html',
+        seller_id=seller_id)
 
-    @client_platform_routes_v2.route('/')
-    def redirect_1():
-        return redirect('/v2/trades-desk')
 
-    @client_platform_routes_v2.errorhandler(401)
-    def not_auth(error=None):
-        return redirect('/v2/login')
+@client_platform_routes_v2.route('/seller_settings')
+@login_required
+def seller_settings_page():
+    seller_id = current_user.get_id()
+    seller_info = db_seller.find_by_db_id(seller_id)
+    return render_template('seller_settings.html')
+
+
+@client_platform_routes_v2.route('/')
+def redirect_1():
+    return redirect('/v2/trades-desk')
+
+
+@client_platform_routes_v2.errorhandler(401)
+def not_auth(error=None):
+    return redirect('/v2/login')

@@ -2,30 +2,29 @@
     <div class="card-box pricing-card-style2">
         <div class="pricing-card-header">
             <div class="center">
-                <h5>Название торгов</h5>
+                <h5>{{ order.title }}</h5>
                 <small>
-                    <p>До начала 8 дней 14:56</p>
                     <p class="text-muted">
                         <b>Основной этап:</b><br>
-                        Начало: 12.02.2022 12:00<br>
-                        Окончание: 14.02.2022 12:00
+                        Начало: {{ order.main_date_start }} {{ order.main_time_start }}<br>
+                        Окончание: {{ order.main_date_finish }} {{ order.main_time_finish }}
                     </p>
                     <p class="text-muted">
                         <b>Дополнительный этап:</b><br>
-                        Начало: 12.02.2022 12:00<br>
-                        Окончание: 14.02.2022 12:00
+                        Начало: {{ order.add_date_start }} {{ order.add_time_start }}<br>
+                        Окончание: {{ order.add_date_finish }} {{ order.add_time_finish }}
                     </p>
                 </small>
             </div>
         </div>
         <div class="pricing-card-body">
             <div class="pricing-points">
-                <p>Описание торгов</p>
+                <p>{{ order.desc }}</p>
             </div>
         </div>
         <div class="cta left">
             <small class="left">
-                <p>Доступно 158 позиций</p>
+                <p>Доступно позиций: {{ order.items_count | length }}</p>
             </small>
         </div>
     </div>

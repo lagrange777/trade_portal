@@ -25,7 +25,7 @@
 <body>
 <div class="pre-loader">
     <div class="pre-loader-box">
-{#        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>#}
+        {#        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>#}
         <div class='loader-progress' id="progress_div">
             <div class='bar' style="background: #6B9543 !important;" id='bar1'></div>
         </div>
@@ -40,56 +40,98 @@
 <div class="mobile-menu-overlay"></div>
 
 <div class="main-container">
-    <div class="pd-ltr-20 xs-pd-20-10">
-        <div class="min-height-200px">
-            <div class="page-header">
-                <div class="row">
-                    <div class="col-md-12 col-sm-12">
-                        <div class="title">
-                            <h4>Доступные торги</h4>
-                        </div>
-                        <nav aria-label="breadcrumb" role="navigation">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Все торги</a></li>
-                            </ol>
-                        </nav>
+    <div class="col-12 mb-30">
+    <h5 class="h4 mb-20" id="cur_time"></h5>
+        <div class="tab">
+            <ul class="nav nav-pills justify-content-end" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active text-blue" data-toggle="tab" href="#not_started" role="tab"
+                       aria-selected="true">Скоро начнутся</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-blue" data-toggle="tab" href="#main" role="tab"
+                       aria-selected="true">Основные</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-blue" data-toggle="tab" href="#between" role="tab"
+                       aria-selected="false">Перерыв</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-blue" data-toggle="tab" href="#add" role="tab"
+                       aria-selected="false">Дополнительные</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-blue" data-toggle="tab" href="#finished" role="tab"
+                       aria-selected="false">Закончились</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="not_started" role="tabpanel">
+                    <h4 class="mb-30 mt-30 text-blue h4">Скоро начнутся</h4>
+                    <div class="row">
+                        {% for index in range(order.1 | length) %}
+                            {{ order.1[index] }}
+                        {% endfor %}
                     </div>
                 </div>
-            </div>
-
-            <div class="container px-0">
-                <h4 class="mb-30 mt-30 text-blue h4">Основные торги</h4>
-                <div class="row">
-                    {% include 'trades_desc_cards/trades_desk_card_main.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_main.html' %}
+                <div class="tab-pane fade" id="main" role="tabpanel">
+                    <h4 class="mb-30 mt-30 text-blue h4">Основные</h4>
+                    <div class="row">
+                        {% for index in range(order.2 | length) %}
+                            {{ order.2[index] }}
+                        {% endfor %}
+                    </div>
                 </div>
-                <h4 class="mb-30 mt-30 text-blue h4">Дополнительные торги</h4>
-                <div class="row">
-                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_add.html' %}
+                <div class="tab-pane fade" id="between" role="tabpanel">
+                    <h4 class="mb-30 mt-30 text-blue h4">Перерыв</h4>
+                    <div class="row">
+                        {% for index in range(order.3 | length) %}
+                            {{ order.3[index] }}
+                        {% endfor %}
+                    </div>
                 </div>
-                <h4 class="mb-30 mt-30 text-blue h4">Скоро начнутся</h4>
-                <div class="row">
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
-                    {% include 'trades_desc_cards/trades_desk_card_soon.html' %}
+                <div class="tab-pane fade" id="add" role="tabpanel">
+                    <h4 class="mb-30 mt-30 text-blue h4">Дополнительные</h4>
+                    <div class="row">
+                        {% for index in range(order.4 | length) %}
+                            {{ order.4[index] }}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="finished" role="tabpanel">
+                    <h4 class="mb-30 mt-30 text-blue h4">Завершенные</h4>
+                    <div class="row">
+                        {% for index in range(order.5 | length) %}
+                            {{ order.5[index] }}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!-- js -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="../static/vendors/scripts/core.js"></script>
 <script src="../static/vendors/scripts/script.min.js"></script>
 <script src="../static/vendors/scripts/process.js"></script>
 <script src="../static/vendors/scripts/layout-settings.js"></script>
+<script>
+    function clock() {
+        const d = new Date().toLocaleString("ru-RU", { timeZone: 'Europe/Moscow' });
+        $("#cur_time").html(d);
+    }
+    setInterval("clock()", 1000);
+
+    $(document).ready(function () {
+
+        $('.enter-btn').click(function() {
+           let orderid = $(this).attr('id');
+            let args = '?orderid=' + orderid;
+            window.open('/v2/trade' + args)
+        });
+
+    });
+</script>
 </body>
 </html>
