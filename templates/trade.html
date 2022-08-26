@@ -25,7 +25,7 @@
 <body>
 <div class="pre-loader">
     <div class="pre-loader-box">
-        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>
+{#        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>#}
         <div class='loader-progress' id="progress_div">
             <div class='bar' style="background: #6B9543 !important;" id='bar1'></div>
         </div>
@@ -52,19 +52,19 @@
                         <h4 class="text-blue h4">{{ step }}</h4>
                     </div>
                 </div>
-                {% if is_trade_available %}
+{#                {% if is_trade_available %}#}
                     <form class="d-block d-sm-block d-md-block d-lg-none d-xl-none">
                         {% for i in range(order | length) %}
                             <div class="form-group row">
-                                <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].ITEM_NAME }}<br>{{ order[i].QTY | string + ' ' + order[i].UNIT }}
+                                <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].item_name }}<br>{{ order[i].qty | string + ' ' + order[i].unit }}
                                 </label>
                                 <div class="col-sm-12 col-md-10">
-                                    <small>Ваша цена за {{ order[i].QTY | string + ' ' + order[i].UNIT }}</small>
+                                    <small>Ваша цена за {{ order[i].qty | string + ' ' + order[i].unit }}</small>
                                     <input class="form-control offer-value" type="number"
                                            id="bid_id_{{ i }}">
                                     {% if current_step == 2 %}
                                         <small class="form-text text-muted">
-                                            {{ 'Лучшее предложение: ' + best_add_offers[order[i].ITEM_1C_ID].MAIN_BID | string }}
+                                            {{ 'Лучшее предложение: ' + order[i].best_last_bid | string }}
                                         </small>
                                     {% endif %}
                                     <div class="custom-control custom-checkbox mt-3">
@@ -175,19 +175,20 @@
                             <tbody>
                             {% for i in range(order | length) %}
                             <tr>
-                                <th scope="row">{{ order[i].ITEM_NAME }}</th>
-                                <td>{{ order[i].QTY}}</td>
-                                <td>{{ order[i].UNIT}}</td>
-                                <td>Лучшая ставка</td>
-                                <td>Моя ставка</td>
-                                <td><input class="form-control comment-value" type="text"></td>
+                                <th scope="row">{{ order[i].item_name }}</th>
+                                <td>{{ order[i].qty}}</td>
+                                <td>{{ order[i].unit}}</td>
+                                <td>{{ order[i].best_last_bid }}</td>
+                                <td>{{ order[i].seller_last_bid }}</td>
+                                <td><input class="form-control offer-value" type="text"></td>
                                 <td><input class="form-control comment-value" type="text"></td>
                             </tr>
                             {% endfor %}
                             </tbody>
                         </table>
+                    <a class="btn btn-primary text-white btn btn-block">Block level button</a>
                     </div>
-                {% endif %}
+{#                {% endif %}#}
             </div>
         </div>
     </div>
@@ -201,101 +202,91 @@
 <script src="../static/vendors/scripts/process.js"></script>
 <script src="../static/vendors/scripts/layout-settings.js"></script>
 <script>
-
-    $(document).ready(function () {
-        {% if is_trade_available %}
-            var offers = {};
-
-            $('body').on('input', '.offer-value', function () {
-                this.value = this.value.replace(/[^0-9\.\,]/g, '');
-            });
-
-            {% for i in range(order | length) %}
-                $('#no_position_check_{{ i }}').click(function () {
-                    if ($(this).is(':checked')) {
-                        $('#bid_id_{{ i }}').val('0');
-                        $('#bid_id_{{ i }}').prop('disabled', true);
-                    } else {
-                        $('#bid_id_{{ i }}').val('');
-                        $('#bid_id_{{ i }}').prop('disabled', false);
-                    }
-                });
-            {% endfor %}
-
-            $('#prepare_offer').click(function () {
-                var res = '<br><small>';
-                var bid = '';
-                var comment = '';
-                {% for i in range(order | length) %}
-                    bid = $('#bid_id_{{ i }}').val();
-                    comment = $('#comment_id_{{ i }}').val();
-                    res = res + ' ' + "<b>{{ order[i].ITEM_NAME }}:</b><br>Цена за {{ order[i].QTY | string + ' ' + order[i].UNIT}}"
-                    if (bid === '0' || bid === '') {
-                        res = res + ' ' + "- нет предложения<br>"
-                    } else {
-                        res = res + " - " + $('#bid_id_{{ i }}').val() + " ₽<br>"
-                    }
-                    if (comment !== '') {
-                        res = res + '<b>Комментарий:</b><br>'
-                        res = res + comment + '<br>'
-                    }
-                    res = res + '<hr/>'
-                {% endfor %}
-                res = res + '</small>'
-                $('#conf_offer').html(res)
-            });
-
-            $('#send_offer').click(function () {
-                {% for i in range(order | length) %}
-                    offers['{{ order[i].ITEM_1C_ID}}'] = {
-                        'BID': $('#bid_id_{{ i }}').val(),
-                        'SELLER_COMMENT': $('#comment_id_{{ i }}').val()
-                    };
-                {% endfor %}
-                $.ajax({
-                    {% if current_step == 1 %}
-                        url: "/api/orders/make_main_bid",
-                    {% endif %}
-                    {% if current_step == 2 %}
-                        url: "/api/orders/make_add_bid",
-                    {% endif %}
-                    data: JSON.stringify({
-                        positions: offers,
-                        seller_id: '{{ seller_id}}',
-                        order_id: '{{ order_id }}'
-                    }),
-                    contentType: 'application/json;charset=UTF-8',
-                    method: 'POST',
-                    success: function (response) {
-                        let json = JSON.parse(JSON.stringify(response));
-                        if (json.msgid == 0) {
-                            $('#success-modal').modal('show')
-                        }
-                        if (json.msgid == 1) {
-                            $('#warning-modal').modal('show')
-                        }
-                    },
-                    error: function (error) {
-                        $('#warning-modal').modal('show');
-                    }
-                });
-            });
-            });
-        {% endif %}
-
     function clock() {
-        var d = new Date();
-        var hrs = d.getHours();
-        var min = d.getMinutes();
-        var sec = d.getSeconds();
-
-        if (hrs <= 9) hrs = "0" + hrs;
-        if (min <= 9) min = "0" + min;
-        if (sec <= 9) sec = "0" + sec;
-
-        $("#cur_time").html("{{ date }} " + hrs + ":" + min + ":" + sec);
+        const d = new Date().toLocaleString("ru-RU", { timeZone: 'Europe/Moscow' });
+        $("#cur_time").html(d);
     }
-
     setInterval("clock()", 1000);
+
+    {#$(document).ready(function () {#}
+    {#    {% if is_trade_available %}#}
+    {#        var offers = {};#}
+    {##}
+    {#        $('body').on('input', '.offer-value', function () {#}
+    {#            this.value = this.value.replace(/[^0-9\.\,]/g, '');#}
+    {#        });#}
+    {##}
+    {#        {% for i in range(order | length) %}#}
+    {#            $('#no_position_check_{{ i }}').click(function () {#}
+    {#                if ($(this).is(':checked')) {#}
+    {#                    $('#bid_id_{{ i }}').val('0');#}
+    {#                    $('#bid_id_{{ i }}').prop('disabled', true);#}
+    {#                } else {#}
+    {#                    $('#bid_id_{{ i }}').val('');#}
+    {#                    $('#bid_id_{{ i }}').prop('disabled', false);#}
+    {#                }#}
+    {#            });#}
+    {#        {% endfor %}#}
+    {##}
+    {#        $('#prepare_offer').click(function () {#}
+    {#            var res = '<br><small>';#}
+    {#            var bid = '';#}
+    {#            var comment = '';#}
+    {#            {% for i in range(order | length) %}#}
+    {#                bid = $('#bid_id_{{ i }}').val();#}
+    {#                comment = $('#comment_id_{{ i }}').val();#}
+    {#                res = res + ' ' + "<b>{{ order[i].ITEM_NAME }}:</b><br>Цена за {{ order[i].QTY | string + ' ' + order[i].UNIT}}"#}
+    {#                if (bid === '0' || bid === '') {#}
+    {#                    res = res + ' ' + "- нет предложения<br>"#}
+    {#                } else {#}
+    {#                    res = res + " - " + $('#bid_id_{{ i }}').val() + " ₽<br>"#}
+    {#                }#}
+    {#                if (comment !== '') {#}
+    {#                    res = res + '<b>Комментарий:</b><br>'#}
+    {#                    res = res + comment + '<br>'#}
+    {#                }#}
+    {#                res = res + '<hr/>'#}
+    {#            {% endfor %}#}
+    {#            res = res + '</small>'#}
+    {#            $('#conf_offer').html(res)#}
+    {#        });#}
+    {##}
+    {#        $('#send_offer').click(function () {#}
+    {#            {% for i in range(order | length) %}#}
+    {#                offers['{{ order[i].ITEM_1C_ID}}'] = {#}
+    {#                    'BID': $('#bid_id_{{ i }}').val(),#}
+    {#                    'SELLER_COMMENT': $('#comment_id_{{ i }}').val()#}
+    {#                };#}
+    {#            {% endfor %}#}
+    {#            $.ajax({#}
+    {#                {% if current_step == 1 %}#}
+    {#                    url: "/api/orders/make_main_bid",#}
+    {#                {% endif %}#}
+    {#                {% if current_step == 2 %}#}
+    {#                    url: "/api/orders/make_add_bid",#}
+    {#                {% endif %}#}
+    {#                data: JSON.stringify({#}
+    {#                    positions: offers,#}
+    {#                    seller_id: '{{ seller_id}}',#}
+    {#                    order_id: '{{ order_id }}'#}
+    {#                }),#}
+    {#                contentType: 'application/json;charset=UTF-8',#}
+    {#                method: 'POST',#}
+    {#                success: function (response) {#}
+    {#                    let json = JSON.parse(JSON.stringify(response));#}
+    {#                    if (json.msgid == 0) {#}
+    {#                        $('#success-modal').modal('show')#}
+    {#                    }#}
+    {#                    if (json.msgid == 1) {#}
+    {#                        $('#warning-modal').modal('show')#}
+    {#                    }#}
+    {#                },#}
+    {#                error: function (error) {#}
+    {#                    $('#warning-modal').modal('show');#}
+    {#                }#}
+    {#            });#}
+    {#        });#}
+    {#        });#}
+    {#    {% endif %}#}
 </script>
 </html>

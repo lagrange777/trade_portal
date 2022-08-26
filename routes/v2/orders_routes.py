@@ -251,7 +251,8 @@ class BidModel:
 
 class BidHelper:
     def __init__(self, order_id):
-        self.order_id = order_id
+        self.order_id_1c = order_id
+        self.order_id = str(mongo.db['orders'].find_one({'id_1c': order_id}, {'_id': 1})['_id'])
 
     def get_all_main_bids(self):
         all_bids = mongo.db['mainbids'].find(

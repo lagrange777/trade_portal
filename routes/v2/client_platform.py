@@ -9,6 +9,7 @@ from flask_login import login_required, login_user, current_user, logout_user
 from markupsafe import Markup
 
 from app_config import mongo, manager
+from routes.v2.orders_routes import BidHelper
 from utils.response_helper import create_resp
 
 client_platform_routes_v2 = Blueprint('client_platform_routes_v2', __name__, url_prefix='/v2/')
@@ -25,6 +26,13 @@ class TradeStage(Enum):
 
 
 class TimeHelper:
+    @staticmethod
+    def get_cur_date_and_time():
+        offset = datetime.timezone(datetime.timedelta(hours=3))
+        now = datetime.datetime.now(offset)
+        cur_date = now.strftime('%Y-%m-%d')
+        cur_time = str(now.hour) + '-' + str(now.minute)
+        return cur_date, cur_time
 
     @staticmethod
     def string_datetime_to_timestamp(date_string, time_string):
@@ -198,15 +206,14 @@ def trades_desk():
     cur_date = now.strftime('%Y-%m-%d')
     cur_time = str(now.hour) + '-' + str(now.minute)
 
-    msgid = 0
-    result = TradeHelper(seller_id).get_grouped_orders_for_seller(cur_date, cur_time)
-    print(result)
+    grouped_orders = TradeHelper(seller_id).get_grouped_orders_for_seller(cur_date, cur_time)
+    print(grouped_orders)
     templates_not_started = []
     templates_main = []
     templates_between = []
     templates_add = []
     templates_finished = []
-    for each in result[5]:
+    for each in grouped_orders[5]:
         each['items_count'] = each['sellers'][seller_id]
         templates_not_started.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
         templates_main.append(Markup(render_template('trades_desc_cards/trades_desk_card_main.html', order=each)))
@@ -229,15 +236,77 @@ def trades_desk():
 @client_platform_routes_v2.route('/trade')
 @login_required
 def main_page():
+    global best_last_bid, seller_last_bid
     seller_id = current_user.get_1c_id()
     _args = request.args
     order_id = _args.get('orderid')
 
-    bid_helper = BidHelper
+    bid_helper = BidHelper(order_id)
+    all_mains = bid_helper.get_all_main_bids()
+    all_adds = bid_helper.get_all_add_bids()
+    best_mains = bid_helper.get_best_main_bids()
+    best_adds = bid_helper.get_best_add_bids()
+
+    order_info = mongo.db['orders'].find_one(
+        {
+            'id_1c': order_id
+        }
+    )
+    time_helper = TimeHelper(
+        main_date_start=order_info['main_date_start'],
+        main_time_start=order_info['main_time_start'],
+        main_date_finish=order_info['main_date_finish'],
+        main_time_finish=order_info['main_time_finish'],
+        add_date_start=order_info['add_date_start'],
+        add_time_start=order_info['add_time_start'],
+        add_date_finish=order_info['add_date_finish'],
+        add_time_finish=order_info['add_time_finish']
+    )
+
+    cur_date_and_time = TimeHelper.get_cur_date_and_time()
+    cur_stage = time_helper.get_current_stage(cur_date_and_time[1], cur_date_and_time[0])
+
+    seller_items_ids = order_info['sellers'][seller_id]
+
+    seller_items = []
+
+    for item_id in seller_items_ids:
+        i = order_info['items'][item_id]
+        if cur_stage == TradeStage.FINISHED:
+            try:
+                best_last_bid = best_mains[item_id]['value']
+            except KeyError:
+                best_last_bid = 0.0
+
+            seller_last_bid = 0.0
+            if item_id in all_mains.keys():
+                for bid in all_mains[item_id]:
+                    if seller_id == bid['seller_id']:
+                        seller_last_bid = bid['value']
+                        break
+            i['best_last_bid'] = best_last_bid
+            i['seller_last_bid'] = seller_last_bid
+            seller_items.append(i)
+
+        if cur_stage == TradeStage.ADD:
+            try:
+                best_last_bid = best_adds[item_id]['value']
+            except KeyError:
+                best_last_bid = 0.0
+            seller_last_bid = 0.0
+            if item_id in all_adds.keys():
+                for bid in all_adds[item_id]:
+                    if seller_id == bid['seller_id']:
+                        seller_last_bid = bid['value']
+                        break
+            i['best_last_bid'] = best_last_bid
+            i['seller_last_bid'] = seller_last_bid
+            seller_items.append(i)
 
     return render_template(
         'trade.html',
-        seller_id=seller_id)
+        seller_id=seller_id,
+        order=seller_items)
 
 
 @client_platform_routes_v2.route('/seller_settings')
