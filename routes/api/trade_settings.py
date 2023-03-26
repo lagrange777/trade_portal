@@ -6,7 +6,7 @@ from utils.response_helper import create_resp
 settings_routes = Blueprint('settings_routes', __name__, url_prefix='/api/settings/')
 
 
-@settings_routes.route('set_schedule', methods=['POST'])
+@settings_routes.route('set-schedule', methods=['POST'])
 def set_schedule():
     _json = request.json
     main_hour_start = _json['MAIN_HOUR_START']

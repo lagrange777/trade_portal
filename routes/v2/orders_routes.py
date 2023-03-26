@@ -3,9 +3,10 @@ import sys
 from bson import ObjectId
 from flask import Blueprint, request
 from app_config import mongo
+from routes.v2.trade_stage import TradeStage
 from utils.response_helper import create_resp
 
-orders_routes_v2 = Blueprint('orders_routes_v2', __name__, url_prefix='/v2/api/orders/')
+orders_routes = Blueprint('orders_routes', __name__, url_prefix='/api/orders/')
 
 
 class OrderModel:
@@ -96,9 +97,9 @@ class OrderModel:
 
     @staticmethod
     def read_from_db(id_db):
-        order = mongo.db['orders'].find_one(
+        order = mongo.db['ORDERS'].find_one(
             {
-                '_id': ObjectId(id_db)
+                'id_1c': id_db
             },
             {
                 '_id': 0
@@ -131,7 +132,7 @@ class OrderModel:
             'items': self.items
         }
         if is_update:
-            mongo.db['orders'].update_one(
+            mongo.db['ORDERS'].update_one(
                 {
                     '_id': ObjectId(self.id_db),
                 },
@@ -140,7 +141,7 @@ class OrderModel:
                 }
             )
         else:
-            mongo.db['orders'].insert_one(document)
+            mongo.db['ORDERS'].insert_one(document)
 
 
 class ItemModel:
@@ -252,12 +253,12 @@ class BidModel:
 class BidHelper:
     def __init__(self, order_id):
         self.order_id_1c = order_id
-        self.order_id = str(mongo.db['orders'].find_one({'id_1c': order_id}, {'_id': 1})['_id'])
+        self.order_id = str(mongo.db['ORDERS'].find_one({'id_1c': order_id}, {'_id': 1})['_id'])
 
     def get_all_main_bids(self):
-        all_bids = mongo.db['mainbids'].find(
+        all_bids = mongo.db['MAIN_BIDS'].find(
             {
-                'order_id': self.order_id
+                'order_id': self.order_id_1c
             },
             {
                 'stage': 0,
@@ -281,9 +282,9 @@ class BidHelper:
         return result
 
     def get_all_add_bids(self):
-        all_bids = mongo.db['addbids'].find(
+        all_bids = mongo.db['ADD_BIDS'].find(
             {
-                'order_id': self.order_id
+                'order_id': self.order_id_1c
             },
             {
                 'stage': 0,
@@ -310,26 +311,26 @@ class BidHelper:
         all_bids = self.get_all_main_bids()
         result = {}
         for item_id, item_bids in all_bids.items():
-            max_value = -1.0
-            max_bid = {}
+            min_value = item_bids[0]['value']
+            best_bid = item_bids[0]
             for bid in item_bids:
-                if bid['value'] > max_value:
-                    max_value = bid['value']
-                    max_bid = bid
-            result[item_id] = max_bid
+                if bid['value'] < min_value:
+                    min_value = bid['value']
+                    best_bid = bid
+            result[item_id] = best_bid
         return result
 
     def get_best_add_bids(self):
         all_bids = self.get_all_add_bids()
         result = {}
         for item_id, item_bids in all_bids.items():
-            max_value = -1.0
-            max_bid = {}
+            min_value = item_bids[0]['value']
+            best_bid = item_bids[0]
             for bid in item_bids:
-                if bid['value'] > max_value:
-                    max_value = bid['value']
-                    max_bid = bid
-            result[item_id] = max_bid
+                if bid['value'] < min_value:
+                    min_value = bid['value']
+                    best_bid = bid
+            result[item_id] = best_bid
         return result
 
     def get_best_all_bids(self):
@@ -358,7 +359,7 @@ class BidHelper:
         return result
 
 
-@orders_routes_v2.route('create-order', methods=['POST'])
+@orders_routes.route('create-order', methods=['POST'])
 def create_order():
     _json = request.json
     order_id = ObjectId()
@@ -370,7 +371,7 @@ def create_order():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('update-order', methods=['POST'])
+@orders_routes.route('update-order', methods=['POST'])
 def update_order():
     _json = request.json
     _json['id_db'] = ObjectId(_json['id_db'])
@@ -382,10 +383,10 @@ def update_order():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get-order-info', methods=['POST'])
+@orders_routes.route('get-order-info', methods=['POST'])
 def get_order_info():
     _json = request.json
-    order_id = _json['id_db']
+    order_id = _json['id_1c']
 
     order_info = OrderModel.read_from_db(order_id)
 
@@ -400,53 +401,105 @@ def get_order_info():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('make-main-bid', methods=['POST'])
+@orders_routes.route('make-main-bid', methods=['POST'])
 def make_main_bid():
-    _json_array = request.json
+    _json = request.json
     created_bids = []
-    for bid in _json_array:
-        bid['stage'] = 0
-        bid_id = bid['id_db']
+    positions = _json['positions']
+    seller_id = _json['seller_id']
+    order_id = _json['order_id']
+    for item_id in positions:
+        try:
+            bid_value = float(positions[item_id]['bid'])
+        except:
+            bid_value = 0
+        b = {
+            'stage': TradeStage.MAIN.value,
+            'item_id': item_id,
+            'order_id': order_id,
+            'seller_id': seller_id,
+            'comment': positions[item_id]['seller_comment'],
+            'value': bid_value
+        }
+
+        bid_db = mongo.db['MAIN_BIDS'].find_one(
+            {
+                'item_id': item_id,
+                'seller_id': seller_id,
+                'order_id': order_id
+            }
+        )
+        if isinstance(bid_db, dict):
+            bid_id = str(bid_db['_id'])
+        else:
+            bid_id = 'first_bid'
         if bid_id == 'first_bid':
             bid_id = str(ObjectId())
-            bid['id_db'] = bid_id
-            bid['is_update'] = False
+            b['id_db'] = bid_id
+            b['is_update'] = False
         else:
-            bid['is_update'] = True
+            b['id_db'] = bid_id
+            b['is_update'] = True
 
-        created_bid = BidModel.create_instance(bid)
+        created_bid = BidModel.create_instance(b)
         created_bids.append(created_bid)
 
-    result = BidModel.write_to_db(created_bids, 'mainbids')
+    result = BidModel.write_to_db(created_bids, 'MAIN_BIDS')
     msg_id = 0
 
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('make-add-bid', methods=['POST'])
+@orders_routes.route('make-add-bid', methods=['POST'])
 def make_add_bid():
-    _json_array = request.json
     created_bids = []
-    for bid in _json_array:
-        bid['stage'] = 1
-        bid_id = bid['id_db']
+    _json = request.json
+    positions = _json['positions']
+    seller_id = _json['seller_id']
+    order_id = _json['order_id']
+    for item_id in positions:
+        try:
+            bid_value = float(positions[item_id]['bid'])
+        except:
+            bid_value = 0
+        b = {
+            'stage': TradeStage.ADD.value,
+            'item_id': item_id,
+            'order_id': order_id,
+            'seller_id': seller_id,
+            'comment': positions[item_id]['seller_comment'],
+            'value': bid_value
+        }
+
+        bid_db = mongo.db['ADD_BIDS'].find_one(
+            {
+                'item_id': item_id,
+                'seller_id': seller_id,
+                'order_id': order_id
+            }
+        )
+        if isinstance(bid_db, dict):
+            bid_id = str(bid_db['_id'])
+        else:
+            bid_id = 'first_bid'
         if bid_id == 'first_bid':
             bid_id = str(ObjectId())
-            bid['id_db'] = bid_id
-            bid['is_update'] = False
+            b['id_db'] = bid_id
+            b['is_update'] = False
         else:
-            bid['is_update'] = True
+            b['id_db'] = bid_id
+            b['is_update'] = True
 
-        created_bid = BidModel.create_instance(bid)
+        created_bid = BidModel.create_instance(b)
         created_bids.append(created_bid)
 
-    result = BidModel.write_to_db(created_bids, 'addbids')
+    result = BidModel.write_to_db(created_bids, 'ADD_BIDS')
     msg_id = 0
 
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get-best-by-main-bid', methods=['POST'])
+@orders_routes.route('get-best-by-main-bid', methods=['POST'])
 def get_best_by_main_bid():
     _json = request.json
     order_id = _json['order_id']
@@ -455,7 +508,7 @@ def get_best_by_main_bid():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get-all-by-main-bid', methods=['POST'])
+@orders_routes.route('get-all-by-main-bid', methods=['POST'])
 def get_all_by_main_bid():
     _json = request.json
     order_id = _json['order_id']
@@ -464,7 +517,7 @@ def get_all_by_main_bid():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get-best-by-add-bid', methods=['POST'])
+@orders_routes.route('get-best-by-add-bid', methods=['POST'])
 def get_best_by_add_bid():
     _json = request.json
     order_id = _json['order_id']
@@ -473,7 +526,7 @@ def get_best_by_add_bid():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get-all-by-add-bid', methods=['POST'])
+@orders_routes.route('get-all-by-add-bid', methods=['POST'])
 def get_all_by_add_bid():
     _json = request.json
     order_id = _json['order_id']
@@ -482,7 +535,7 @@ def get_all_by_add_bid():
     return create_resp(msg_id, result)
 
 
-@orders_routes_v2.route('get-best-by-all-bids', methods=['POST'])
+@orders_routes.route('get-best-by-all-bids', methods=['POST'])
 def get_best_by_all_bids():
     _json = request.json
     order_id = _json['order_id']

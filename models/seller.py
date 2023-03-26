@@ -6,7 +6,7 @@ import werkzeug.security
 
 from models.constants import SellerDBKeys
 
-dbk = SellerDBKeys()
+dbk = SellerDBKeys
 wz = werkzeug.security
 
 

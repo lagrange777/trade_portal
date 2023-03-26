@@ -5,12 +5,12 @@ from models.constants import SellerDBKeys
 from models.seller import SellerDBHelper
 from utils.response_helper import create_resp
 
-sellers_routes_v2 = Blueprint('sellers_routes_v2', __name__, url_prefix='/v2/api/sellers/')
+sellers_routes = Blueprint('sellers_routes', __name__, url_prefix='/api/sellers/')
 db = SellerDBHelper(mongo)
 dbk = SellerDBKeys()
 
 
-@sellers_routes_v2.route('add-seller', methods=['POST'])
+@sellers_routes.route('add-sellers', methods=['POST'])
 def add_seller():
     _json = request.json
     slrs = _json['sellers']
@@ -32,7 +32,7 @@ def add_seller():
     return create_resp(msg_id, result)
 
 
-@sellers_routes_v2.route('get-all-sellers', methods=['GET'])
+@sellers_routes.route('get-all-sellers', methods=['GET'])
 def get_all_sellers():
     _json = request.json
     sellers = db.get_all_sellers()
@@ -41,7 +41,7 @@ def get_all_sellers():
     return create_resp(msg_id, result)
 
 
-@sellers_routes_v2.route('get-seller-by-1c-id', methods=['POST'])
+@sellers_routes.route('get-seller-by-1c-id', methods=['POST'])
 def get_seller_by_1c_id():
     _json = request.json
     id_ic = _json[dbk.id_1c]
@@ -52,7 +52,7 @@ def get_seller_by_1c_id():
     return create_resp(msg_id, result)
 
 
-@sellers_routes_v2.route('get-seller-by-db-id', methods=['POST'])
+@sellers_routes.route('get-seller-by-db-id', methods=['POST'])
 def get_seller_by_db_id():
     _json = request.json
     id_db = _json[dbk.id_db]

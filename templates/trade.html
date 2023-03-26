@@ -25,7 +25,7 @@
 <body>
 <div class="pre-loader">
     <div class="pre-loader-box">
-{#        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>#}
+        {#        <div class="loader-logo"><img src="../static/loader_logo.svg" alt=""></div>#}
         <div class='loader-progress' id="progress_div">
             <div class='bar' style="background: #6B9543 !important;" id='bar1'></div>
         </div>
@@ -52,143 +52,142 @@
                         <h4 class="text-blue h4">{{ step }}</h4>
                     </div>
                 </div>
-{#                {% if is_trade_available %}#}
-                    <form class="d-block d-sm-block d-md-block d-lg-none d-xl-none">
-                        {% for i in range(order | length) %}
-                            <div class="form-group row">
-                                <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].item_name }}<br>{{ order[i].qty | string + ' ' + order[i].unit }}
-                                </label>
-                                <div class="col-sm-12 col-md-10">
-                                    <small>Ваша цена за {{ order[i].qty | string + ' ' + order[i].unit }}</small>
-                                    <input class="form-control offer-value" type="number"
-                                           id="bid_id_{{ i }}">
-                                    {% if current_step == 2 %}
-                                        <small class="form-text text-muted">
-                                            {{ 'Лучшее предложение: ' + order[i].best_last_bid | string }}
-                                        </small>
-                                    {% endif %}
-                                    <div class="custom-control custom-checkbox mt-3">
-                                        <input type="checkbox" class="custom-control-input"
-                                               id="no_position_check_{{ i }}">
-                                        <label class="custom-control-label" for="no_position_check_{{ i }}">Нет
-                                            позиции</label>
-                                    </div>
-                                    <small>Ваш комментарий к позиции (необязательно)</small>
-                                    <input class="form-control comment-value" type="text"
-                                           id="comment_id_{{ i }}">
-                                </div>
-                            </div>
-                            <hr/>
-                        {% endfor %}
+                <form class="d-block d-sm-block d-md-block d-lg-none d-xl-none">
+                    {% for i in range(order | length) %}
                         <div class="form-group row">
-                            <div class="col-sm-12 text-right">
-                                <a data-toggle="modal" data-target="#confirmation-modal"
-                                   class="btn btn-primary text-white"
-                                   id="prepare_offer">Отправить заявку</a>
-                            </div>
-                            <div class="col-md-4 col-sm-12 mb-30">
-                                <div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body text-center font-18">
-                                                <h4 class="text-left padding-top-30 mb-5 weight-500">Ваша заявка</h4>
-                                                <p class="text-left padding-top-5 mb-30 weight-300" id="conf_offer"></p>
-                                                <div class="padding-bottom-30 row"
-                                                     style="max-width: 170px; margin: 0 auto;">
-                                                    <div class="col-6">
-                                                        <button type="button"
-                                                                class="btn btn-secondary border-radius-100 btn-block confirmation-btn"
-                                                                data-dismiss="modal"><i class="fa fa-times"></i>
-                                                        </button>
-                                                        Нет
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <button type="button" id="send_offer"
-                                                                class="btn btn-primary border-radius-100 btn-block confirmation-btn"
-                                                                data-dismiss="modal"><i class="fa fa-check"></i>
-                                                        </button>
-                                                        Да
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <label class="col-sm-12 col-md-2 col-form-label">{{ order[i].item_name }}<br>{{ order[i].qty | string + ' ' + order[i].unit }}
+                            </label>
+                            <div class="col-sm-12 col-md-10">
+                                <small>Ваша цена за {{ order[i].qty | string + ' ' + order[i].unit }}</small>
+                                <input class="form-control offer-value-m" type="number"
+                                       id="bid_id_{{ i }}">
+                                {% if current_step == 2 %}
+                                    <small class="form-text text-muted">
+                                        {{ 'Лучшее предложение: ' + order[i].best_last_bid | string }}
+                                    </small>
+                                {% endif %}
+                                <div class="custom-control custom-checkbox mt-3">
+                                    <input type="checkbox" class="custom-control-input"
+                                           id="no_position_check_{{ i }}">
+                                    <label class="custom-control-label" for="no_position_check_{{ i }}">Нет
+                                        позиции</label>
                                 </div>
+                                <small>Ваш комментарий к позиции (необязательно)</small>
+                                <input class="form-control comment-value" type="text"
+                                       id="comment_id_{{ i }}">
                             </div>
-                            <div class="col-md-4 col-sm-12 mb-30">
-                                <div class="modal fade" id="success-modal" tabindex="-1" role="dialog"
-                                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body text-center font-18">
-                                                <h3 class="mb-20">Заявка отправлена!</h3>
-                                                <div class="mb-30 text-center">
-                                                    <img src="../static/vendors/images/success.png"></div>
-                                                Ваша заявка на {{ step }} принята.<br>
-                                                Вы можете изменить Вашу заявку до окончания текущего этапа торгов.
-                                            </div>
-                                            <div class="modal-footer justify-content-center">
-                                                <button type="button" class="btn btn-primary" data-dismiss="modal">
-                                                    Закрыть
-                                                </button>
-                                            </div>
+                        </div>
+                        <hr/>
+                    {% endfor %}
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-right">
+                            <a data-toggle="modal" data-target="#confirmation-modal"
+                               class="btn btn-primary text-white"
+                               id="prepare_offer">Отправить заявку</a>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-none d-sm-none d-md-none d-lg-block d-xl-block">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Наименование</th>
+                            <th scope="col">Количество</th>
+                            <th scope="col">Ед. изм.</th>
+                            <th scope="col">Лучшая ставка</th>
+                            <th scope="col">Моя ставка</th>
+                            <th scope="col">Сделать ставку</th>
+                            <th scope="col">Мой комментарий</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in range(order | length) %}
+                            <tr>
+                                <th scope="row" id="itemname-{{ order[i].item_1c_id }}">{{ order[i].item_name }}</th>
+                                <td id="qty-{{ order[i].item_1c_id }}">{{ order[i].qty }}</td>
+                                <td id="unit-{{ order[i].item_1c_id }}">{{ order[i].unit }}</td>
+                                <td id="best-{{ order[i].item_1c_id }}">{{ order[i].best_last_bid }}</td>
+                                <td id="last-{{ order[i].item_1c_id }}">{{ order[i].seller_last_bid }}</td>
+                                <td><input class="form-control offer-value-d" type="number"
+                                           id="value-{{ order[i].item_1c_id }}"></td>
+                                <td><input class="form-control comment-value-d" type="text"
+                                           id="comment-{{ order[i].item_1c_id }}"></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a class="btn btn-primary text-white btn btn-block" id="prepare-offer">Сохранить</a>
+                </div>
+                <div class="col-md-4 col-sm-12 mb-30">
+                    <div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body text-center font-18">
+                                    <h4 class="text-left padding-top-30 mb-5 weight-500">Ваша заявка</h4>
+                                    <p class="text-left padding-top-5 mb-30 weight-300" id="conf_offer"></p>
+                                    <div class="padding-bottom-30 row"
+                                         style="max-width: 170px; margin: 0 auto;">
+                                        <div class="col-6">
+                                            <button type="button"
+                                                    class="btn btn-secondary border-radius-100 btn-block cancel-btn"
+                                                    data-dismiss="modal"><i class="fa fa-times"></i>
+                                            </button>
+                                            Нет
                                         </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="col-md-4 col-sm-12 mb-30">
-                                <div class="modal fade" id="warning-modal" tabindex="-1" role="dialog"
-                                     aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-sm modal-dialog-centered">
-                                        <div class="modal-content bg-warning">
-                                            <div class="modal-body text-center">
-                                                <h3 class="mb-15"><i class="fa fa-exclamation-triangle"></i> Что-то
-                                                    пошло не так :(
-                                                </h3>
-                                                <p>Ваша заявка не была принята. Попробуй еще раз.<br>
-                                                    В случае повторного возникновения ошибки обратитесь к организатору
-                                                    торгов.</p>
-                                                <button type="button" class="btn btn-dark" data-dismiss="modal">Ok
-                                                </button>
-                                            </div>
+                                        <div class="col-6">
+                                            <button type="button" id="send_offer"
+                                                    class="btn btn-primary border-radius-100 btn-block confirmation-btn"
+                                                    data-dismiss="modal"><i class="fa fa-check"></i>
+                                            </button>
+                                            Да
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                    <div class="d-none d-sm-none d-md-none d-lg-block d-xl-block">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th scope="col">Наименование</th>
-                                <th scope="col">Количество</th>
-                                <th scope="col">Ед. изм.</th>
-                                <th scope="col">Лучшая ставка</th>
-                                <th scope="col">Моя ставка</th>
-                                <th scope="col">Сделать ставку</th>
-                                <th scope="col">Мой комментарий</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for i in range(order | length) %}
-                            <tr>
-                                <th scope="row">{{ order[i].item_name }}</th>
-                                <td>{{ order[i].qty}}</td>
-                                <td>{{ order[i].unit}}</td>
-                                <td>{{ order[i].best_last_bid }}</td>
-                                <td>{{ order[i].seller_last_bid }}</td>
-                                <td><input class="form-control offer-value" type="text"></td>
-                                <td><input class="form-control comment-value" type="text"></td>
-                            </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    <a class="btn btn-primary text-white btn btn-block">Block level button</a>
                     </div>
-{#                {% endif %}#}
+                </div>
+                <div class="col-md-4 col-sm-12 mb-30">
+                    <div class="modal fade" id="success-modal" tabindex="-1" role="dialog"
+                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body text-center font-18">
+                                    <h3 class="mb-20">Заявка отправлена!</h3>
+                                    <div class="mb-30 text-center">
+                                        <img src="../static/vendors/images/success.png"></div>
+                                    Ваша заявка на {{ step }} принята.<br>
+                                    Вы можете изменить Вашу заявку до окончания текущего этапа торгов.
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                        Закрыть
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12 mb-30">
+                    <div class="modal fade" id="warning-modal" tabindex="-1" role="dialog"
+                         aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                            <div class="modal-content bg-warning">
+                                <div class="modal-body text-center">
+                                    <h3 class="mb-15"><i class="fa fa-exclamation-triangle"></i> Что-то
+                                        пошло не так :(
+                                    </h3>
+                                    <p>Ваша заявка не была принята. Попробуй еще раз.<br>
+                                        В случае повторного возникновения ошибки обратитесь к организатору
+                                        торгов.</p>
+                                    <button type="button" class="btn btn-dark" data-dismiss="modal">Ok
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -203,90 +202,153 @@
 <script src="../static/vendors/scripts/layout-settings.js"></script>
 <script>
     function clock() {
-        const d = new Date().toLocaleString("ru-RU", { timeZone: 'Europe/Moscow' });
+        const d = new Date().toLocaleString("ru-RU", {timeZone: 'Europe/Moscow'});
         $("#cur_time").html(d);
     }
+
     setInterval("clock()", 1000);
 
-    {#$(document).ready(function () {#}
-    {#    {% if is_trade_available %}#}
-    {#        var offers = {};#}
-    {##}
-    {#        $('body').on('input', '.offer-value', function () {#}
-    {#            this.value = this.value.replace(/[^0-9\.\,]/g, '');#}
-    {#        });#}
-    {##}
-    {#        {% for i in range(order | length) %}#}
-    {#            $('#no_position_check_{{ i }}').click(function () {#}
-    {#                if ($(this).is(':checked')) {#}
-    {#                    $('#bid_id_{{ i }}').val('0');#}
-    {#                    $('#bid_id_{{ i }}').prop('disabled', true);#}
-    {#                } else {#}
-    {#                    $('#bid_id_{{ i }}').val('');#}
-    {#                    $('#bid_id_{{ i }}').prop('disabled', false);#}
-    {#                }#}
-    {#            });#}
-    {#        {% endfor %}#}
-    {##}
-    {#        $('#prepare_offer').click(function () {#}
-    {#            var res = '<br><small>';#}
-    {#            var bid = '';#}
-    {#            var comment = '';#}
-    {#            {% for i in range(order | length) %}#}
-    {#                bid = $('#bid_id_{{ i }}').val();#}
-    {#                comment = $('#comment_id_{{ i }}').val();#}
-    {#                res = res + ' ' + "<b>{{ order[i].ITEM_NAME }}:</b><br>Цена за {{ order[i].QTY | string + ' ' + order[i].UNIT}}"#}
-    {#                if (bid === '0' || bid === '') {#}
-    {#                    res = res + ' ' + "- нет предложения<br>"#}
-    {#                } else {#}
-    {#                    res = res + " - " + $('#bid_id_{{ i }}').val() + " ₽<br>"#}
-    {#                }#}
-    {#                if (comment !== '') {#}
-    {#                    res = res + '<b>Комментарий:</b><br>'#}
-    {#                    res = res + comment + '<br>'#}
-    {#                }#}
-    {#                res = res + '<hr/>'#}
-    {#            {% endfor %}#}
-    {#            res = res + '</small>'#}
-    {#            $('#conf_offer').html(res)#}
-    {#        });#}
-    {##}
-    {#        $('#send_offer').click(function () {#}
-    {#            {% for i in range(order | length) %}#}
-    {#                offers['{{ order[i].ITEM_1C_ID}}'] = {#}
-    {#                    'BID': $('#bid_id_{{ i }}').val(),#}
-    {#                    'SELLER_COMMENT': $('#comment_id_{{ i }}').val()#}
-    {#                };#}
-    {#            {% endfor %}#}
-    {#            $.ajax({#}
-    {#                {% if current_step == 1 %}#}
-    {#                    url: "/api/orders/make_main_bid",#}
-    {#                {% endif %}#}
-    {#                {% if current_step == 2 %}#}
-    {#                    url: "/api/orders/make_add_bid",#}
-    {#                {% endif %}#}
-    {#                data: JSON.stringify({#}
-    {#                    positions: offers,#}
-    {#                    seller_id: '{{ seller_id}}',#}
-    {#                    order_id: '{{ order_id }}'#}
-    {#                }),#}
-    {#                contentType: 'application/json;charset=UTF-8',#}
-    {#                method: 'POST',#}
-    {#                success: function (response) {#}
-    {#                    let json = JSON.parse(JSON.stringify(response));#}
-    {#                    if (json.msgid == 0) {#}
-    {#                        $('#success-modal').modal('show')#}
-    {#                    }#}
-    {#                    if (json.msgid == 1) {#}
-    {#                        $('#warning-modal').modal('show')#}
-    {#                    }#}
-    {#                },#}
-    {#                error: function (error) {#}
-    {#                    $('#warning-modal').modal('show');#}
-    {#                }#}
-    {#            });#}
-    {#        });#}
-    {#        });#}
-    {#    {% endif %}#}
+    let orderSize = {{ order|length }};
+
+    $(document).ready(function () {
+        $('body').on('input', '.offer-value-d', 'offer-value-m', function () {
+            this.value = this.value.replace(/[^0-9\:\,]/g, '');
+        });
+
+        {#todo селектор по классу + id #}
+
+        {% for i in range(order | length) %}
+            $('#no_position_check_{{ i }}').click(function () {
+                if ($(this).is(':checked')) {
+                    $('#bid_id_{{ i }}').val('0');
+                    $('#bid_id_{{ i }}').prop('disabled', true);
+                } else {
+                    $('#bid_id_{{ i }}').val('');
+                    $('#bid_id_{{ i }}').prop('disabled', false);
+                }
+            });
+        {% endfor %}
+
+        $('#prepare-offer').click(function () {
+            let res = '<br><small>';
+            let bids = {};
+
+            $('.offer-value-d').each(function (i, elem) {
+                let itemid = $(this).attr('id').replace('value-', '')
+                let bid = $(this).val()
+                let comment = $('#comment-' + itemid).val();
+                let name = $('#itemname-' + itemid).html();
+                let qty = $('#qty-' + itemid).html();
+                let unit = $('#unit-' + itemid).html();
+                let best = $('#best-' + itemid).html();
+                bids[itemid] = {
+                    'bid': bid,
+                    'comment': comment,
+                    'name': name,
+                    'qty': qty,
+                    'unit': unit,
+                    'best': best,
+                }
+                res = res + " " + "<b>" + name + ":</b><br>Цена за " + qty + " " + unit
+                if (bid === '0' || bid === '') {
+                    res = res + " " + "- нет предложения<br>"
+                } else {
+                    res = res + " - " + bid + " ₽<br>"
+                }
+                if (comment !== "") {
+                    res = res + "<b>Комментарий:</b><br>"
+                    res = res + comment + "<br>"
+                }
+                res = res + "<hr/>"
+            })
+            res = res + "</small>"
+            $('#conf_offer').html(res)
+            $('#confirmation-modal').modal('toggle')
+
+        })
+
+        $('.confirmation-btn').click(function () {
+            let bids = {}
+            $('.offer-value-d').each(function (i, elem) {
+                let itemid = $(this).attr('id').replace('value-', '')
+                let bid = $(this).val()
+                let comment = $('#comment-' + itemid).val();
+                bids[itemid] = {
+                    'bid': bid,
+                    'seller_comment': comment
+                }
+            })
+            {% if cur_stage == 2 %}
+            let mUrl = "/api/orders/make-main-bid"
+            {% endif %}
+            {% if cur_stage == 4 %}
+            let mUrl = "/api/orders/make-add-bid"
+            {% endif %}
+            $.ajax({
+                url: mUrl,
+                data: JSON.stringify({
+                    positions: bids,
+                    seller_id: '{{ seller_id}}',
+                    order_id: '{{ order_id }}'
+                }),
+                contentType: 'application/json;charset=UTF-8',
+                method: 'POST',
+                success: function (response) {
+                    let json = JSON.parse(JSON.stringify(response));
+                    if (json.msgid == 0) {
+                        $('#success-modal').modal('toggle')
+                    }
+                    if (json.msgid == 1) {
+                        $('#warning-modal').modal('toggle')
+                    }
+                },
+                error: function (error) {
+                    $('#warning-modal').modal('show');
+                }
+            });
+        })
+
+
+        {##}
+        {#$('#send_offer').click(function () {#}
+        {#    {% for i in range(order | length) %}#}
+        {#        offers['{{ order[i].ITEM_1C_ID}}'] = {#}
+        {#            'BID': $('#bid_id_{{ i }}').val(),#}
+        {#            'SELLER_COMMENT': $('#comment_id_{{ i }}').val()#}
+        {#        };#}
+        {#    {% endfor %}#}
+        {#    $.ajax({#}
+        {#        {% if current_step == 1 %}#}
+        {#            url: "/api/orders/make_main_bid",#}
+        {#        {% endif %}#}
+        {#        {% if current_step == 2 %}#}
+        {#            url: "/api/orders/make_add_bid",#}
+        {#        {% endif %}#}
+        {#        data: JSON.stringify({#}
+        {#            positions: offers,#}
+        {#            seller_id: '{{ seller_id}}',#}
+        {#            order_id: '{{ order_id }}'#}
+        {#        }),#}
+        {#        contentType: 'application/json;charset=UTF-8',#}
+        {#        method: 'POST',#}
+        {#        success: function (response) {#}
+        {#            let json = JSON.parse(JSON.stringify(response));#}
+        {#            if (json.msgid == 0) {#}
+        {#                $('#success-modal').modal('show')#}
+        {#            }#}
+        {#            if (json.msgid == 1) {#}
+        {#                $('#warning-modal').modal('show')#}
+        {#            }#}
+        {#        },#}
+        {#        error: function (error) {#}
+        {#            $('#warning-modal').modal('show');#}
+        {#        }#}
+        {#    });#}
+        {#})
+            ;
+            #}
+        }
+    )
+        ;
 </script>
 </html>

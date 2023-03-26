@@ -10,19 +10,12 @@ from markupsafe import Markup
 
 from app_config import mongo, manager
 from routes.v2.orders_routes import BidHelper
+from routes.v2.trade_stage import TradeStage
 from utils.response_helper import create_resp
 
-client_platform_routes_v2 = Blueprint('client_platform_routes_v2', __name__, url_prefix='/v2/')
+client_platform_routes = Blueprint('client_platform_routes', __name__, url_prefix='/')
 
 wz = werkzeug.security
-
-
-class TradeStage(Enum):
-    NOT_STARTED = 1
-    MAIN = 2
-    BETWEEN_MAIN_AND_ADD = 3
-    ADD = 4
-    FINISHED = 5
 
 
 class TimeHelper:
@@ -84,7 +77,7 @@ class TradeHelper:
         self.seller_id_1c = seller_id_1c
 
     def get_grouped_orders_for_seller(self, cur_date, cur_time):
-        all_orders = mongo.db['orders'].find({'status': 'active'})
+        all_orders = mongo.db['ORDERS'].find({'status': 'active'})
 
         seller_orders = []
 
@@ -148,7 +141,7 @@ def load_user(id_db):
         obj_id = ObjectId(id_db)
     except bson.errors.InvalidId:
         return None
-    u = mongo.db['sellers'].find_one(
+    u = mongo.db['SELLERS'].find_one(
         {
             '_id': obj_id
         }
@@ -158,13 +151,13 @@ def load_user(id_db):
     return User(u['id_1c'], str(u['_id']))
 
 
-@client_platform_routes_v2.route('/login', methods=['GET', 'POST'])
+@client_platform_routes.route('/login', methods=['GET', 'POST'])
 def login_page():
     if request.method == 'POST':
         _json = request.json
         login = _json['login']
         password = _json['password']
-        check_user = mongo.db['sellers'].find_one(
+        check_user = mongo.db['SELLERS'].find_one(
             {
                 'email': login
             }
@@ -177,7 +170,7 @@ def login_page():
                     seller_id_db=str(check_user['_id'])
                 )
                 login_user(user)
-                return redirect('/v2/trades-desk')
+                return redirect('/trades-desk')
             else:
                 msg_id = 1
                 result = 'wrong password'
@@ -188,24 +181,25 @@ def login_page():
             return create_resp(msg_id, result)
     else:
         if current_user.is_authenticated:
-            return redirect('/v2/trades-desk')
+            return redirect('/trades-desk')
         return render_template('login.html')
 
 
-@client_platform_routes_v2.route('logout')
+@client_platform_routes.route('logout')
+@login_required
 def logout():
     logout_user()
     return redirect('/login')
 
 
-@client_platform_routes_v2.route('trades-desk')
+@client_platform_routes.route('trades-desk')
+@login_required
 def trades_desk():
     seller_id = current_user.get_1c_id()
     offset = datetime.timezone(datetime.timedelta(hours=3))
     now = datetime.datetime.now(offset)
     cur_date = now.strftime('%Y-%m-%d')
     cur_time = str(now.hour) + '-' + str(now.minute)
-
     grouped_orders = TradeHelper(seller_id).get_grouped_orders_for_seller(cur_date, cur_time)
     print(grouped_orders)
     templates_not_started = []
@@ -213,13 +207,20 @@ def trades_desk():
     templates_between = []
     templates_add = []
     templates_finished = []
-    for each in grouped_orders[5]:
-        each['items_count'] = each['sellers'][seller_id]
-        templates_not_started.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
-        templates_main.append(Markup(render_template('trades_desc_cards/trades_desk_card_main.html', order=each)))
-        templates_between.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
-        templates_add.append(Markup(render_template('trades_desc_cards/trades_desk_card_add.html', order=each)))
-        templates_finished.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+
+    for key in grouped_orders.keys():
+        for each in grouped_orders[key]:
+            each['items_count'] = each['sellers'][seller_id]
+            if key == TradeStage.NOT_STARTED.value:
+                templates_not_started.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+            if key == TradeStage.MAIN.value:
+                templates_main.append(Markup(render_template('trades_desc_cards/trades_desk_card_main.html', order=each)))
+            if key == TradeStage.BETWEEN_MAIN_AND_ADD.value:
+                templates_between.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+            if key == TradeStage.ADD.value:
+                templates_add.append(Markup(render_template('trades_desc_cards/trades_desk_card_add.html', order=each)))
+            if key == TradeStage.FINISHED.value:
+                templates_finished.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
     return render_template(
         'trades_desk.html',
         order=
@@ -233,21 +234,20 @@ def trades_desk():
     )
 
 
-@client_platform_routes_v2.route('/trade')
+@client_platform_routes.route('/trade')
 @login_required
 def main_page():
-    global best_last_bid, seller_last_bid
     seller_id = current_user.get_1c_id()
     _args = request.args
     order_id = _args.get('orderid')
 
     bid_helper = BidHelper(order_id)
-    all_mains = bid_helper.get_all_main_bids()
-    all_adds = bid_helper.get_all_add_bids()
-    best_mains = bid_helper.get_best_main_bids()
-    best_adds = bid_helper.get_best_add_bids()
+    # all_mains = bid_helper.get_all_main_bids()
+    # all_adds = bid_helper.get_all_add_bids()
+    # best_mains = bid_helper.get_best_main_bids()
+    # best_adds = bid_helper.get_best_add_bids()
 
-    order_info = mongo.db['orders'].find_one(
+    order_info = mongo.db['ORDERS'].find_one(
         {
             'id_1c': order_id
         }
@@ -272,7 +272,9 @@ def main_page():
 
     for item_id in seller_items_ids:
         i = order_info['items'][item_id]
-        if cur_stage == TradeStage.FINISHED:
+        if cur_stage == TradeStage.MAIN:
+            all_mains = bid_helper.get_all_main_bids()
+            best_mains = bid_helper.get_best_main_bids()
             try:
                 best_last_bid = best_mains[item_id]['value']
             except KeyError:
@@ -289,6 +291,8 @@ def main_page():
             seller_items.append(i)
 
         if cur_stage == TradeStage.ADD:
+            all_adds = bid_helper.get_all_add_bids()
+            best_adds = bid_helper.get_best_add_bids()
             try:
                 best_last_bid = best_adds[item_id]['value']
             except KeyError:
@@ -305,23 +309,26 @@ def main_page():
 
     return render_template(
         'trade.html',
+        cur_stage=cur_stage.value,
         seller_id=seller_id,
+        order_id=order_id,
         order=seller_items)
 
 
-@client_platform_routes_v2.route('/seller_settings')
+@client_platform_routes.route('/seller_settings')
 @login_required
 def seller_settings_page():
     seller_id = current_user.get_id()
-    seller_info = db_seller.find_by_db_id(seller_id)
+    # seller_info = db_seller.find_by_db_id(seller_id)
     return render_template('seller_settings.html')
 
 
-@client_platform_routes_v2.route('/')
+@client_platform_routes.route('/')
+@login_required
 def redirect_1():
-    return redirect('/v2/trades-desk')
+    return redirect('/trades-desk')
 
 
-@client_platform_routes_v2.errorhandler(401)
+@client_platform_routes.errorhandler(401)
 def not_auth(error=None):
-    return redirect('/v2/login')
+    return redirect('/login')

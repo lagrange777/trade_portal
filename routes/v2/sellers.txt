@@ -1,0 +1,295 @@
+создание/обновление поставщиков
+
+/api/sellers/add-sellers
+
+POST
+JSON
+
+пример запроса
+
+{
+    "sellers": [
+        {
+            "_id": "", - не заполняется, пустая строка
+            "id_1c": "seller_1_id_1c", - id поставщика в 1С
+            "full_name": "Контора поставщика номер 1", - полное наименование поставщика
+            "short_name": "Контора 1", - краткое наименование поставщика
+            "email": "seller1@mail.ru", - почта поставщика, используется как логин для входа
+            "password_hash": "password123", - пароль поставщика
+            "discount": 10.0, - скидка, предоставляемая поставщиком (double)
+            "delay": 10, - острочка платежа, предоставляемая поставщиком (int)
+            "manager": "Иван Иванов 1", - контактное лицо со стороны поставщика
+            "inn": "inn1", - инн поставщика
+            "rating": 1.0, - рейтинг поставщика (double) от 0 до 10
+            "add_info": [ - массив дополнительной информации о поставщике
+                {
+                    "add_param_title": "param title 1", - наименование параметра доп. инфы
+                    "add_param_value": "param value 1" - значене параметра доп. инфы
+                },
+                {
+                    "add_param_title": "param title 2",
+                    "add_param_value": "param value 2"
+                },
+                {
+                    "add_param_title": "param title 3",
+                    "add_param_value": "param value 3"
+                }
+            ]
+        },
+        {
+            "_id": "",
+            "id_1c": "seller_2_id_1c",
+            "full_name": "Контора поставщика номер 2",
+            "short_name": "Контора 2",
+            "email": "seller2@mail.ru",
+            "password_hash": "password123",
+            "discount": 20.0,
+            "delay": 30,
+            "manager": "Иван Иванов 2",
+            "inn": "inn2",
+            "rating": 2.0,
+            "add_info": [
+                {
+                    "add_param_title": "param title 1",
+                    "add_param_value": "param value 1"
+                },
+                {
+                    "add_param_title": "param title 2",
+                    "add_param_value": "param value 2"
+                },
+                {
+                    "add_param_title": "param title 3",
+                    "add_param_value": "param value 3"
+                }
+            ]
+        },
+        {
+            "_id": "",
+            "id_1c": "seller_3_id_1c",
+            "full_name": "Контора поставщика номер 3",
+            "short_name": "Контора 3",
+            "email": "seller3@mail.ru",
+            "password_hash": "password123",
+            "discount": 30.0,
+            "delay": 30,
+            "manager": "Иван Иванов 3",
+            "inn": "inn3",
+            "rating": 3.0,
+            "add_info": [
+                {
+                    "add_param_title": "param title 1",
+                    "add_param_value": "param value 1"
+                },
+                {
+                    "add_param_title": "param title 2",
+                    "add_param_value": "param value 2"
+                },
+                {
+                    "add_param_title": "param title 3",
+                    "add_param_value": "param value 3"
+                }
+            ]
+        }
+    ]
+}
+
+пример ответа
+
+ "msgid": "0",
+    "result": {
+        "created": [ - созданные с нуля поставщики в системе
+            "seller_1_id_1c", - id поставщика в 1С
+            "seller_2_id_1c",
+            "seller_3_id_1c"
+        ],
+        "updated": [] - обновленные поставщики в системе
+    }
+}
+
+**********************************************************************
+
+получение списка всех поставщиков
+
+/api/sellers/get-all-sellers
+
+GET
+без параметров
+
+пример ответа
+
+ "msgid": "0",
+    "result": [
+        {
+            "_id": "6419cd46a0f30bb2fb252a42", - id поставщика в системе (не 1с)
+            "add_info": [
+                {
+                    "add_param_title": "param title 1",
+                    "add_param_value": "param value 1"
+                },
+                {
+                    "add_param_title": "param title 2",
+                    "add_param_value": "param value 2"
+                },
+                {
+                    "add_param_title": "param title 3",
+                    "add_param_value": "param value 3"
+                }
+            ],
+            "delay": 10,
+            "discount": 10.0,
+            "email": "seller1@mail.ru",
+            "full_name": "Контора поставщика номер 1",
+            "id_1c": "seller_1_id_1c",
+            "inn": "inn1",
+            "manager": "Иван Иванов 1",
+            "rating": 1.0,
+            "short_name": "Контора 1"
+        },
+        {
+            "_id": "6419cd46a0f30bb2fb252a43",
+            "add_info": [
+                {
+                    "add_param_title": "param title 1",
+                    "add_param_value": "param value 1"
+                },
+                {
+                    "add_param_title": "param title 2",
+                    "add_param_value": "param value 2"
+                },
+                {
+                    "add_param_title": "param title 3",
+                    "add_param_value": "param value 3"
+                }
+            ],
+            "delay": 30,
+            "discount": 20.0,
+            "email": "seller2@mail.ru",
+            "full_name": "Контора поставщика номер 2",
+            "id_1c": "seller_2_id_1c",
+            "inn": "inn2",
+            "manager": "Иван Иванов 2",
+            "rating": 2.0,
+            "short_name": "Контора 2"
+        },
+        {
+            "_id": "6419cd46a0f30bb2fb252a44",
+            "add_info": [
+                {
+                    "add_param_title": "param title 1",
+                    "add_param_value": "param value 1"
+                },
+                {
+                    "add_param_title": "param title 2",
+                    "add_param_value": "param value 2"
+                },
+                {
+                    "add_param_title": "param title 3",
+                    "add_param_value": "param value 3"
+                }
+            ],
+            "delay": 30,
+            "discount": 30.0,
+            "email": "seller3@mail.ru",
+            "full_name": "Контора поставщика номер 3",
+            "id_1c": "seller_3_id_1c",
+            "inn": "inn3",
+            "manager": "Иван Иванов 3",
+            "rating": 3.0,
+            "short_name": "Контора 3"
+        }
+    ]
+}
+
+**********************************************************************
+
+получение информации по поставщику по его id в 1с
+
+/api/sellers/get-seller-by-1c-id
+
+POST
+JSON
+
+пример запроса
+
+{
+    "id_1c": "seller_1_id_1c"
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "_id": "6419cd46a0f30bb2fb252a42",
+        "add_info": [
+            {
+                "add_param_title": "param title 1",
+                "add_param_value": "param value 1"
+            },
+            {
+                "add_param_title": "param title 2",
+                "add_param_value": "param value 2"
+            },
+            {
+                "add_param_title": "param title 3",
+                "add_param_value": "param value 3"
+            }
+        ],
+        "delay": 10,
+        "discount": 10.0,
+        "email": "seller1@mail.ru",
+        "full_name": "Контора поставщика номер 1",
+        "id_1c": "seller_1_id_1c",
+        "inn": "inn1",
+        "manager": "Иван Иванов 1",
+        "rating": 1.0,
+        "short_name": "Контора 1"
+    }
+}
+
+**********************************************************************
+
+получение информации по поставщику по его id в системе
+
+/api/sellers/get-seller-by-db-id
+
+POST
+JSON
+
+пример запроса
+
+{
+    "_id": "6419cd46a0f30bb2fb252a42"
+}
+
+пример ответа
+
+{
+    "msgid": "0",
+    "result": {
+        "_id": "6419cd46a0f30bb2fb252a42",
+        "add_info": [
+            {
+                "add_param_title": "param title 1",
+                "add_param_value": "param value 1"
+            },
+            {
+                "add_param_title": "param title 2",
+                "add_param_value": "param value 2"
+            },
+            {
+                "add_param_title": "param title 3",
+                "add_param_value": "param value 3"
+            }
+        ],
+        "delay": 10,
+        "discount": 10.0,
+        "email": "seller1@mail.ru",
+        "full_name": "Контора поставщика номер 1",
+        "id_1c": "seller_1_id_1c",
+        "inn": "inn1",
+        "manager": "Иван Иванов 1",
+        "rating": 1.0,
+        "short_name": "Контора 1"
+    }
+}
