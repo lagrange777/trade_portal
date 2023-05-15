@@ -9,5 +9,6 @@
   "secret_key": "empty_key",
   "company_name": "Global Group",
   "version": "1.0.0",
-  "key_word": "1234567890"
+  "key_word": "1234567890",
+  "integration_key": "globaltrade_dev_key"
 }

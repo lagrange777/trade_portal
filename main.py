@@ -3,6 +3,7 @@ from app_config import app
 from routes.v2.client_platform import client_platform_routes
 from routes.v2.orders_routes import orders_routes
 from routes.v2.sellers import sellers_routes
+from routes.v2.ws_updater import socketio
 from utils.config_manager import ConfigManager
 
 
@@ -19,8 +20,15 @@ if __name__ == '__main__':
     port = ConfigManager.get_port()
     debug = ConfigManager.get_debug()
 
-    app.run(
+    socketio.run(
+        app,
         host=host,
         port=port,
-        debug=debug
+        allow_unsafe_werkzeug=True
     )
+
+    # app.run(
+    #     host=host,
+    #     port=port,
+    #     debug=debug
+    # )

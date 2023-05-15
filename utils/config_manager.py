@@ -79,3 +79,10 @@ class ConfigManager:
             configs = json.load(f)
             key_word = configs['key_word']
         return key_word
+
+    @staticmethod
+    def get_integration_key():
+        with open('./configs_jsons/jsons/server_configs.json') as f:
+            configs = json.load(f)
+            integration_key = configs['integration_key']
+        return integration_key

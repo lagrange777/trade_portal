@@ -41,7 +41,7 @@
 
 <div class="main-container">
     <div class="col-12 mb-30">
-    <h5 class="h4 mb-20" id="cur_time"></h5>
+        <h5 class="h4 mb-20" id="cur_time"></h5>
         <div class="tab">
             <ul class="nav nav-pills justify-content-end" role="tablist">
                 <li class="nav-item">
@@ -111,24 +111,27 @@
     </div>
 </div>
 <!-- js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="../static/vendors/scripts/core.js"></script>
 <script src="../static/vendors/scripts/script.min.js"></script>
 <script src="../static/vendors/scripts/process.js"></script>
 <script src="../static/vendors/scripts/layout-settings.js"></script>
 <script>
-    function clock() {
-        const d = new Date().toLocaleString("ru-RU", { timeZone: 'Europe/Moscow' });
-        $("#cur_time").html(d);
-    }
-    setInterval("clock()", 1000);
 
     $(document).ready(function () {
 
-        $('.enter-btn').click(function() {
-           let orderid = $(this).attr('id');
+        var socket = io();
+
+        //receive details from server
+        socket.on("time update", function (msg) {
+            $("#cur_time").html(msg.date);
+        });
+
+        $('.enter-btn').click(function () {
+            let orderid = $(this).attr('id');
             let args = '?orderid=' + orderid;
-            window.open('/trade' + args)
+            window.open('/trade' + args, '_self')
         });
 
     });

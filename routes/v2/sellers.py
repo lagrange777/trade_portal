@@ -1,6 +1,6 @@
 from flask import request, Blueprint
 
-from app_config import mongo
+from app_config import mongo, dev_key
 from models.constants import SellerDBKeys
 from models.seller import SellerDBHelper
 from utils.response_helper import create_resp
@@ -13,6 +13,15 @@ dbk = SellerDBKeys()
 @sellers_routes.route('add-sellers', methods=['POST'])
 def add_seller():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
+
     slrs = _json['sellers']
     created = []
     updated = []
@@ -34,7 +43,16 @@ def add_seller():
 
 @sellers_routes.route('get-all-sellers', methods=['GET'])
 def get_all_sellers():
-    _json = request.json
+    _args = request.args
+    try:
+        int_key = _args['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
+
     sellers = db.get_all_sellers()
     msg_id = 0
     result = sellers
@@ -44,6 +62,15 @@ def get_all_sellers():
 @sellers_routes.route('get-seller-by-1c-id', methods=['POST'])
 def get_seller_by_1c_id():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
+
     id_ic = _json[dbk.id_1c]
     seller = db.find_by_1c_id(id_ic)
     seller_as_dict = db.seller_to_dict(seller)
@@ -55,6 +82,15 @@ def get_seller_by_1c_id():
 @sellers_routes.route('get-seller-by-db-id', methods=['POST'])
 def get_seller_by_db_id():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
+
     id_db = _json[dbk.id_db]
     seller = db.find_by_db_id(id_db)
     seller_as_dict = db.seller_to_dict(seller)

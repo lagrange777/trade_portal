@@ -2,7 +2,7 @@ import sys
 
 from bson import ObjectId
 from flask import Blueprint, request
-from app_config import mongo
+from app_config import mongo, dev_key
 from routes.v2.trade_stage import TradeStage
 from utils.response_helper import create_resp
 
@@ -219,8 +219,11 @@ class BidModel:
     @staticmethod
     def write_to_db(bids_list, stage):
         docs_for_insert = []
-        result = {'inserted': [], 'updated': []}
+        result = {'inserted': [], 'updated': [], 'skipped': []}
         for bid in bids_list:
+            if bid.value == 0:
+                result['skipped'].append(bid.id_db)
+                continue
             document = {
                 '_id': ObjectId(bid.id_db),
                 'item_id': bid.item_id,
@@ -247,6 +250,7 @@ class BidModel:
 
         if len(docs_for_insert) > 0:
             mongo.db[stage].insert_many(docs_for_insert)
+        print(result)
         return result
 
 
@@ -311,26 +315,38 @@ class BidHelper:
         all_bids = self.get_all_main_bids()
         result = {}
         for item_id, item_bids in all_bids.items():
-            min_value = item_bids[0]['value']
-            best_bid = item_bids[0]
+            min_value = 'no data'
+            best_bid = 'no data'
             for bid in item_bids:
-                if bid['value'] < min_value:
+                if bid['value'] != 0:
                     min_value = bid['value']
                     best_bid = bid
-            result[item_id] = best_bid
+                    break
+            if min_value != 'no data':
+                for bid in item_bids:
+                    if bid['value'] < min_value and bid['value'] != 0:
+                        min_value = bid['value']
+                        best_bid = bid
+                    result[item_id] = best_bid
         return result
 
     def get_best_add_bids(self):
         all_bids = self.get_all_add_bids()
         result = {}
         for item_id, item_bids in all_bids.items():
-            min_value = item_bids[0]['value']
-            best_bid = item_bids[0]
+            min_value = 'no data'
+            best_bid = 'no data'
             for bid in item_bids:
-                if bid['value'] < min_value:
+                if bid['value'] != 0:
                     min_value = bid['value']
                     best_bid = bid
-            result[item_id] = best_bid
+                    break
+            if min_value != 'no data':
+                for bid in item_bids:
+                    if bid['value'] < min_value and bid['value'] != 0:
+                        min_value = bid['value']
+                        best_bid = bid
+                    result[item_id] = best_bid
         return result
 
     def get_best_all_bids(self):
@@ -362,6 +378,14 @@ class BidHelper:
 @orders_routes.route('create-order', methods=['POST'])
 def create_order():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     order_id = ObjectId()
     _json['id_db'] = str(order_id)
     created_order = OrderModel.create_instance(_json)
@@ -374,6 +398,14 @@ def create_order():
 @orders_routes.route('update-order', methods=['POST'])
 def update_order():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     _json['id_db'] = ObjectId(_json['id_db'])
     created_order = OrderModel.create_instance(_json)
     print(created_order.items)
@@ -386,6 +418,14 @@ def update_order():
 @orders_routes.route('get-order-info', methods=['POST'])
 def get_order_info():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     order_id = _json['id_1c']
 
     order_info = OrderModel.read_from_db(order_id)
@@ -502,6 +542,14 @@ def make_add_bid():
 @orders_routes.route('get-best-by-main-bid', methods=['POST'])
 def get_best_by_main_bid():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     order_id = _json['order_id']
     result = BidHelper(order_id).get_best_main_bids()
     msg_id = 0
@@ -511,6 +559,14 @@ def get_best_by_main_bid():
 @orders_routes.route('get-all-by-main-bid', methods=['POST'])
 def get_all_by_main_bid():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     order_id = _json['order_id']
     result = BidHelper(order_id).get_all_main_bids()
     msg_id = 0
@@ -520,6 +576,14 @@ def get_all_by_main_bid():
 @orders_routes.route('get-best-by-add-bid', methods=['POST'])
 def get_best_by_add_bid():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     order_id = _json['order_id']
     result = BidHelper(order_id).get_best_add_bids()
     msg_id = 0
@@ -529,6 +593,14 @@ def get_best_by_add_bid():
 @orders_routes.route('get-all-by-add-bid', methods=['POST'])
 def get_all_by_add_bid():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     order_id = _json['order_id']
     result = BidHelper(order_id).get_all_add_bids()
     msg_id = 0
@@ -538,6 +610,15 @@ def get_all_by_add_bid():
 @orders_routes.route('get-best-by-all-bids', methods=['POST'])
 def get_best_by_all_bids():
     _json = request.json
+    try:
+        int_key = _json['dev_key']
+    except KeyError:
+        int_key = ''
+
+    if int_key != dev_key:
+        msg_id = -1
+        result = 'bad key'
+        return create_resp(msg_id, result)
     order_id = _json['order_id']
     result = BidHelper(order_id).get_best_all_bids()
     msg_id = 0

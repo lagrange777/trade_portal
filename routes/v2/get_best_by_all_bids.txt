@@ -3,7 +3,7 @@
 POST
 JSON
 
-/v2/api/orders/get-best-by-all-bids
+/api/orders/get-best-by-all-bids
 
 запрос
 

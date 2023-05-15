@@ -1,4 +1,5 @@
 import datetime
+import re
 from enum import Enum
 
 import bson.errors
@@ -159,7 +160,7 @@ def login_page():
         password = _json['password']
         check_user = mongo.db['SELLERS'].find_one(
             {
-                'email': login
+                'email': re.compile(login, re.IGNORECASE)
             }
         )
         if isinstance(check_user, dict):
@@ -212,15 +213,19 @@ def trades_desk():
         for each in grouped_orders[key]:
             each['items_count'] = each['sellers'][seller_id]
             if key == TradeStage.NOT_STARTED.value:
-                templates_not_started.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+                templates_not_started.append(
+                    Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
             if key == TradeStage.MAIN.value:
-                templates_main.append(Markup(render_template('trades_desc_cards/trades_desk_card_main.html', order=each)))
+                templates_main.append(
+                    Markup(render_template('trades_desc_cards/trades_desk_card_main.html', order=each)))
             if key == TradeStage.BETWEEN_MAIN_AND_ADD.value:
-                templates_between.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+                templates_between.append(
+                    Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
             if key == TradeStage.ADD.value:
                 templates_add.append(Markup(render_template('trades_desc_cards/trades_desk_card_add.html', order=each)))
             if key == TradeStage.FINISHED.value:
-                templates_finished.append(Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
+                templates_finished.append(
+                    Markup(render_template('trades_desc_cards/trades_desk_card_soon.html', order=each)))
     return render_template(
         'trades_desk.html',
         order=
@@ -286,8 +291,14 @@ def main_page():
                     if seller_id == bid['seller_id']:
                         seller_last_bid = bid['value']
                         break
-            i['best_last_bid'] = best_last_bid
-            i['seller_last_bid'] = seller_last_bid
+            if best_last_bid != 0.0:
+                i['best_last_bid'] = best_last_bid
+            else:
+                i['best_last_bid'] = 'нет ставок'
+            if seller_last_bid != 0.0:
+                i['seller_last_bid'] = seller_last_bid
+            else:
+                i['seller_last_bid'] = 'нет ставок'
             seller_items.append(i)
 
         if cur_stage == TradeStage.ADD:
@@ -303,8 +314,15 @@ def main_page():
                     if seller_id == bid['seller_id']:
                         seller_last_bid = bid['value']
                         break
-            i['best_last_bid'] = best_last_bid
-            i['seller_last_bid'] = seller_last_bid
+            if best_last_bid != 0.0:
+                i['best_last_bid'] = best_last_bid
+            else:
+                i['best_last_bid'] = 'нет ставок'
+
+            if seller_last_bid != 0.0:
+                i['seller_last_bid'] = best_last_bid
+            else:
+                i['seller_last_bid'] = 'нет ставок'
             seller_items.append(i)
 
     return render_template(

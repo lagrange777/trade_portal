@@ -1,14 +1,14 @@
 Обновление заявки
 
+/api/orders/create-order
+
 POST
 JSON
-
-/v2/api/orders/create-order
 
 запрос
 
 {
-    "id_db": "62fbe6a3fa9f6625b7b3059c", // id заказа для обновления в бд сервиса
+    "id_db": "62fbe6a3fa9f6625b7b3059c", // id заказа для обновления в бд сервиса (см. результат запроса на создание заявки)
     "id_1c": "order_1c_id",
     "main_date_start": "2022-08-17",
     "main_time_start": "10-00",

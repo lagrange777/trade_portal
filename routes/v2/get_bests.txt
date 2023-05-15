@@ -3,14 +3,14 @@
 POST
 JSON
 
-/v2/api/orders/get-best-by-main-bid - для основного этапа
-/v2/api/orders/get-best-by-add-bid - для дополнительного этапа
+/api/orders/get-best-by-main-bid - для основного этапа
+/api/orders/get-best-by-add-bid - для дополнительного этапа
 
 
 запрос
 
 {
-    "id_db": "62fbe6a3fa9f6625b7b3059c", // id заказа в бд сервиса
+    "order_id": "order_1c_id" // id заказа в 1с
 }
 
 ответ

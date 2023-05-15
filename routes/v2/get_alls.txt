@@ -3,14 +3,14 @@
 POST
 JSON
 
-/v2/api/orders/get-all-by-main-bid - для основного этапа
-/v2/api/orders/get-all-by-add-bid - для дополнительного этапа
+/api/orders/get-all-by-main-bid - для основного этапа
+/api/orders/get-all-by-add-bid - для дополнительного этапа
 
 
 запрос
 
 {
-    "id_db": "62fbe6a3fa9f6625b7b3059c", // id заказа в бд сервиса
+    "order_id": "order_1c_id" // id заказа в 1с
 }
 
 ответ
@@ -20,38 +20,34 @@ JSON
     "result": {
         "item_id_1": [
             {
-                "bid_id": "62fbfab40d1b5d26c5cba8b7",
-                "comment": "bid 1_1",
+                "bid_id": "64204c3c1262d6a480a97b5a",
+                "comment": "seller1 item1",
                 "item_id": "item_id_1",
-                "seller_id": "seller_id_1",
-                "value": 1001
+                "seller_id": "seller_1_id_1c",
+                "value": 1200.0
+            },
+            {
+                "bid_id": "64204cae1262d6a480a97b5c",
+                "comment": "seller2 item1",
+                "item_id": "item_id_1",
+                "seller_id": "seller_2_id_1c",
+                "value": 1000.0
             }
         ],
         "item_id_2": [
             {
-                "bid_id": "62fbfab40d1b5d26c5cba8b8",
-                "comment": "bid 2_1",
+                "bid_id": "64204c3c1262d6a480a97b5b",
+                "comment": "seller1 item2",
                 "item_id": "item_id_2",
-                "seller_id": "seller_id_1",
-                "value": 2001
-            }
-        ],
-        "item_id_3": [
+                "seller_id": "seller_1_id_1c",
+                "value": 2400.0
+            },
             {
-                "bid_id": "62fbfab40d1b5d26c5cba8b9",
-                "comment": "bid 3_1",
-                "item_id": "item_id_3",
-                "seller_id": "seller_id_1",
-                "value": 3001
-            }
-        ],
-        "item_id_4": [
-            {
-                "bid_id": "62fbfab40d1b5d26c5cba8ba",
-                "comment": "bid 4_1",
-                "item_id": "item_id_4",
-                "seller_id": "seller_id_1",
-                "value": 4001
+                "bid_id": "64204cae1262d6a480a97b5d",
+                "comment": "seller2 item2",
+                "item_id": "item_id_2",
+                "seller_id": "seller_2_id_1c",
+                "value": 2200.0
             }
         ]
     }

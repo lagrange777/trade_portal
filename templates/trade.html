@@ -59,7 +59,7 @@
                             </label>
                             <div class="col-sm-12 col-md-10">
                                 <small>Ваша цена за {{ order[i].qty | string + ' ' + order[i].unit }}</small>
-                                <input class="form-control offer-value-m" type="number"
+                                <input class="form-control offer-value-m" type="text"
                                        id="bid_id_{{ i }}">
                                 {% if current_step == 2 %}
                                     <small class="form-text text-muted">
@@ -108,7 +108,7 @@
                                 <td id="unit-{{ order[i].item_1c_id }}">{{ order[i].unit }}</td>
                                 <td id="best-{{ order[i].item_1c_id }}">{{ order[i].best_last_bid }}</td>
                                 <td id="last-{{ order[i].item_1c_id }}">{{ order[i].seller_last_bid }}</td>
-                                <td><input class="form-control offer-value-d" type="number"
+                                <td><input class="form-control offer-value-d" type="text"
                                            id="value-{{ order[i].item_1c_id }}"></td>
                                 <td><input class="form-control comment-value-d" type="text"
                                            id="comment-{{ order[i].item_1c_id }}"></td>
@@ -161,7 +161,7 @@
                                     Вы можете изменить Вашу заявку до окончания текущего этапа торгов.
                                 </div>
                                 <div class="modal-footer justify-content-center">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                    <button type="button" class="btn btn-primary" id="close-trade" data-dismiss="modal">
                                         Закрыть
                                     </button>
                                 </div>
@@ -195,24 +195,24 @@
 </body>
 
 <!-- js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="../static/vendors/scripts/core.js"></script>
 <script src="../static/vendors/scripts/script.min.js"></script>
 <script src="../static/vendors/scripts/process.js"></script>
 <script src="../static/vendors/scripts/layout-settings.js"></script>
 <script>
-    function clock() {
-        const d = new Date().toLocaleString("ru-RU", {timeZone: 'Europe/Moscow'});
-        $("#cur_time").html(d);
-    }
-
-    setInterval("clock()", 1000);
-
     let orderSize = {{ order|length }};
-
+    let title = {% if cur_stage == 2 %} 'Основные торги' {% elif cur_stage == 4 %} 'Дополнительные торги' {% else %} 'В данный момент торги неактивны' {% endif %}
     $(document).ready(function () {
+        var socket = io();
+        socket.on("time update", function (msg) {
+            $("#cur_time").html(title + '<br>' + msg.date);
+        });
+
         $('body').on('input', '.offer-value-d', 'offer-value-m', function () {
-            this.value = this.value.replace(/[^0-9\:\,]/g, '');
+            var preg = $(this).val().replace(/[^.\d]+/g, "").replace(/^([^\.]*\.)|\./g, '$1');
+            $(this).val(preg);
         });
 
         {#todo селектор по классу + id #}
@@ -279,10 +279,10 @@
                 }
             })
             {% if cur_stage == 2 %}
-            let mUrl = "/api/orders/make-main-bid"
+                let mUrl = "/api/orders/make-main-bid"
             {% endif %}
             {% if cur_stage == 4 %}
-            let mUrl = "/api/orders/make-add-bid"
+                let mUrl = "/api/orders/make-add-bid"
             {% endif %}
             $.ajax({
                 url: mUrl,
@@ -307,6 +307,9 @@
                 }
             });
         })
+        $('#close-trade').click(function () {
+            history.back()
+        });
 
 
         {##}
